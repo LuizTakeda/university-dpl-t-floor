@@ -42,8 +42,8 @@ static void running_left_logic(const GameInputs *inputs);
 static void stoped_left_logic(const GameInputs *inputs);
 static void turing_left_logic(const GameInputs *inputs);
 
-static void climbing_up(const GameInputs *inputs);
-static void climbing_down(const GameInputs *inputs);
+static void climbing_up_logic(const GameInputs *inputs);
+static void climbing_down_logic(const GameInputs *inputs);
 // ### END Funções internas ###
 
 /**
@@ -333,7 +333,7 @@ static void turing_left_logic(const GameInputs *inputs)
 /**
  *  Estado para quando o player está subindo
  */
-static void climbing_up(const GameInputs *inputs)
+static void climbing_up_logic(const GameInputs *inputs)
 {
   if (is_first_entry())
   {
@@ -354,7 +354,7 @@ static void climbing_up(const GameInputs *inputs)
 /**
  *  Estado para quando o player está descendo
  */
-static void climbing_down(const GameInputs *inputs)
+static void climbing_down_logic(const GameInputs *inputs)
 {
   if (is_first_entry())
   {
