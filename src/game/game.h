@@ -1,6 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
+#define SCREEN_W 320
+#define SCREEN_H 224
+
 typedef enum
 {
   GIS_NOTHING = 0,

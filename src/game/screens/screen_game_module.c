@@ -3,6 +3,7 @@
 #include <sprite_eng.h>
 
 #include "../game.h"
+#include "../player/player.h"
 
 void game_screen_game(const GameInputs *inputs)
 {
@@ -12,5 +13,9 @@ void game_screen_game(const GameInputs *inputs)
     VDP_clearPlane(BG_B, 1);
     VDP_clearPlane(WINDOW, 1);
     VDP_drawImageEx(BG_A, &img_bg, TILE_ATTR_FULL(PAL0, 0, 0, 0, 1), 0, 0, true, DMA);
+
+    player_setup();
   }
+
+  player_logic(inputs);
 }
