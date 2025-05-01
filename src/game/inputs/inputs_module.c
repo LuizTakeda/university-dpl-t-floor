@@ -21,8 +21,12 @@ GameInputs game_inputs_read()
   return return_value;
 }
 
+// Varivavel para controle de qual estado foi realiza com o botão
 static u16 __last_inputs_state = 0;
 
+/**
+ * Realiza a leitura de um botão em especifico
+ */
 static GameInputStates read_button(u16 current_inputs, u16 button)
 {
   if (current_inputs & button && !(__last_inputs_state & button))

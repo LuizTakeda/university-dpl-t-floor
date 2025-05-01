@@ -12,49 +12,21 @@
  *     JAVA := C:/Users/Aluno/Downloads/jdk-24/bin/java
  */
 #include <genesis.h>
-#include <sprite_eng.h>
 
-#include "resources.h"
-
-#include "gameobject.h"
-#include "player.h"
-
-void game_init()
-{
-	VDP_setScreenWidth320();
-	SPR_init();
-
-	// Desenhando background
-	VDP_drawImageEx(BG_A, &img_bg, TILE_ATTR_FULL(PAL0, 0, 0, 0, 1), 0, 0, true, DMA);
-
-	// Iniciando player
-	u16 num_tiles = Player_init();
-}
-
-void game_update()
-{
-	Player_update();
-}
+#include "game/game.h"
 
 int main(bool resetType)
 {
-	// Soft reset doesn't clear RAM. Can lead to bugs.
 	if (!resetType)
 	{
 		SYS_hardReset();
 	}
 
-	game_init();
-	
-	SYS_doVBlankProcess();
+	game_setup();
 
 	while (true)
 	{
-		game_update();
-
-		SPR_update();
-
-		SYS_doVBlankProcess();
+		game_logic();
 	}
 
 	return 0;
