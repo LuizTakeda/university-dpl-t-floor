@@ -21,6 +21,7 @@ typedef enum
 static Sprite *_sprite;
 static fix16 _x = FIX16(128);
 static fix16 _y = FIX16(176 - 16);
+static u16 _left_x, _right_x, _bottom_y, _top_y;
 static GamePlayerStates _current_state;
 static bool _turn_complete = false;
 static bool _first_entry = true;
@@ -30,6 +31,8 @@ static u8 _frame_counter = 0;
 // ### START Funções internas ###
 
 static void set_state(GamePlayerStates state);
+static void convert_positions_fix_to_ints();
+static bool can_climb();
 
 static void running_right_logic(const GameInputs *inputs);
 static void stoped_right_logic(const GameInputs *inputs);
@@ -103,11 +106,13 @@ GamePlayerInfo player_logic(const GameInputs *inputs)
     }
   } while (player_info.state != _current_state);
 
-  player_info.left_x = fix16ToInt(_x);
-  player_info.right_x = fix16ToInt(_x) + 8;
+  convert_positions_fix_to_ints();
 
-  player_info.bottom_y = fix16ToInt(_y);
-  player_info.top_y = fix16ToInt(_y) + 16;
+  player_info.left_x = _left_x;
+  player_info.right_x = _right_x;
+
+  player_info.bottom_y = _bottom_y;
+  player_info.top_y = _top_y;
 
   return player_info;
 }
@@ -150,6 +155,48 @@ static bool is_first_entry()
 }
 
 /**
+ * Calcula as posições do player
+ */
+static void convert_positions_fix_to_ints()
+{
+  _left_x = fix16ToInt(_x);
+  _right_x = fix16ToInt(_x) + 8;
+
+  _bottom_y = fix16ToInt(_y);
+  _top_y = fix16ToInt(_y) + 16;
+}
+
+/**
+ * Verifica se o player pode subir alguma escada
+ */
+static bool can_climb()
+{
+  convert_positions_fix_to_ints();
+
+  if (_right_x >= 104 && _right_x <= 111)
+  {
+    return true;
+  }
+
+  if (_left_x >= 104 && _left_x <= 111)
+  {
+    return true;
+  }
+
+  if (_right_x >= 200 && _right_x <= 207)
+  {
+    return true;
+  }
+
+  if (_left_x >= 200 && _left_x <= 207)
+  {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Estado do player correndo para esquerda
  */
 static void running_right_logic(const GameInputs *inputs)
@@ -162,6 +209,12 @@ static void running_right_logic(const GameInputs *inputs)
   if (game_inputs_click(inputs->left))
   {
     set_state(GPS_TURING_LEFT);
+    return;
+  }
+
+  if (game_inputs_click(inputs->up) && can_climb())
+  {
+    set_state(GPS_CLIMBING_UP);
     return;
   }
 
@@ -278,7 +331,7 @@ static void turing_left_logic(const GameInputs *inputs)
 }
 
 /**
- *
+ *  Estado para quando o player está subindo
  */
 static void climbing_up(const GameInputs *inputs)
 {
@@ -286,10 +339,20 @@ static void climbing_up(const GameInputs *inputs)
   {
     SPR_setAnim(_sprite, GPA_CLIMBING);
   }
+
+  if (fix16ToInt(_y) > 128)
+  {
+    _y -= FIX16(1);
+    SPR_setPosition(_sprite, fix16ToInt(_x), fix16ToInt(_y));
+    return;
+  }
+
+  set_state(GPS_RUNNING_LEFT);
+  return;
 }
 
 /**
- *
+ *  Estado para quando o player está descendo
  */
 static void climbing_down(const GameInputs *inputs)
 {
