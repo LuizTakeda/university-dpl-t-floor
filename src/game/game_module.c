@@ -44,7 +44,7 @@ void game_logic()
     break;
 
   case GSN_FINISH:
-    game_screen_game_over(&inputs);
+    game_screen_finish(&inputs);
     break;
 
   case GSN_CREDITS:
