@@ -2,6 +2,8 @@
 #include "resources.h"
 #include "globals.h"
 
+#include "game/inputs/inputs.h"
+
 GameObject player;
 
 u16 Player_init()
@@ -11,7 +13,7 @@ u16 Player_init()
 
 void Player_get_input()
 {
-  u16 joy = JOY_readJoypad(JOY_1);
+  GameInputs inputs = game_inputs_read();
 
   player.speed_x = 0;
 
@@ -20,16 +22,18 @@ void Player_get_input()
   else
     player.speed_y = 0;
 
-  if (joy & BUTTON_LEFT)
+  if (game_inputs_hold(inputs.left))
   {
+    SPR_setAnim(player.sprite, 0);
     player.speed_x = -PLAYER_SPEED;
   }
-  else if (joy & BUTTON_RIGHT)
+  else if (game_inputs_hold(inputs.right))
   {
+    SPR_setAnim(player.sprite, 1);
     player.speed_x = +FIX16(6);
   }
 
-  if (joy & BUTTON_UP && player.speed_y == 0 && player.y + 8 > SCREEN_H / 2)
+  if (game_inputs_hold(inputs.up) && player.speed_y == 0 && player.y + 8 > SCREEN_H / 2)
   {
     player.speed_y = -PLAYER_SPEED;
   }

@@ -1,2 +1,2 @@
-IMAGE img_bg "backgrounds\bg1.png" FAST
-SPRITE  spr_player "sprites\Sprite-0001.png" 1 1 FAST
+IMAGE img_bg "backgrounds\cenario.png" FAST
+SPRITE  spr_player "sprites\player.png" 1 2 FAST 5

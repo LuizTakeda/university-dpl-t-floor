@@ -7,6 +7,7 @@
         "inc"
     ],
     "files.associations": {
+        ".als.json": "jsonc",
         "genesis.h": "c",
         "tab_cnv.h": "c",
         "font.h": "c",
@@ -19,7 +20,9 @@
         "structs.h": "c",
         "maths.h": "c",
         "level.h": "c",
-        "limits": "c"
+        "limits": "c",
+        "globals.h": "c",
+        "inputs.h": "c"
     },
     "gens.path": "C:\\Users\\umota\\Documents\\1-Faculdade\\0-Materias\\Legados\\Gens_KMod\\gens"
 }
