@@ -5,6 +5,6 @@
 
 void player_setup();
 
-void player_logic(const GameInputs *inputs);
+GamePlayerInfo player_logic(const GameInputs *inputs);
 
 #endif

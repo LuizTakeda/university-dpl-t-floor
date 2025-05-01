@@ -17,5 +17,5 @@ void game_screen_game(const GameInputs *inputs)
     player_setup();
   }
 
-  player_logic(inputs);
+  GamePlayerInfo player_info = player_logic(inputs);
 }

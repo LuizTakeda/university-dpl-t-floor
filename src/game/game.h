@@ -33,6 +33,25 @@ typedef enum
   GSN_CREDITS,
 } GameScreenName;
 
+typedef enum
+{
+  GPS_RUNNING_LEFT = 0,
+  GPS_STOPED_LEFT,
+  GPS_TURING_LEFT,
+  GPS_RUNNING_RIGHT,
+  GPS_STOPED_RIGHT,
+  GPS_TURING_RIGHT,
+  GPS_CLIMBING_UP,
+  GPS_CLIMBING_DOWN,
+} GamePlayerStates;
+
+typedef struct
+{
+  u16 left_x, right_x;
+  u16 bottom_y, top_y;
+  GamePlayerStates state;
+} GamePlayerInfo;
+
 // ### START Functions ###
 
 /**

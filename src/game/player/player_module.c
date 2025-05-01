@@ -7,136 +7,112 @@
 
 typedef enum
 {
-  GPS_RUNNING_LEFT = 0,
-  GPS_STOP_LEFT,
-  GPS_TURING_LEFT,
-  GPS_RUNNING_RIGHT,
-  GPS_STOP_RIGHT,
-  GPS_TURING_RIGHT,
-  GPS_CLIMBING,
-} GamePlayerStates;
+  GPA_RUNNING_LEFT = 4,
+  GPA_STOPED_LEFT = 3,
+  GPA_TURING_LEFT = 2,
+  GPA_RUNNING_RIGHT = 1,
+  GPA_STOPED_RIGHT = 0,
+  GPA_TURING_RIGHT = 5,
+  GPA_CLIMBING = 6,
+} GamePlayerAnimations;
 
-static Sprite *sprite;
+// ### START Variaveis globais ###
 
-inline static GamePlayerStates player_get_state();
-inline static bool player_done_turn();
+static Sprite *_sprite;
+static fix16 _x = FIX16(128);
+static fix16 _y = FIX16(176 - 16);
+static GamePlayerStates _current_state;
+static bool _turn_complete = false;
+static bool _first_entry = true;
+static u8 _frame_counter = 0;
+// ### END Variaveis globais ###
 
-static void player_set_state(GamePlayerStates state);
+// ### START Funções internas ###
 
-fix16 player_x, player_y;
+static void set_state(GamePlayerStates state);
 
+static void running_right_logic(const GameInputs *inputs);
+static void stoped_right_logic(const GameInputs *inputs);
+static void turing_right_logic(const GameInputs *inputs);
+
+static void running_left_logic(const GameInputs *inputs);
+static void stoped_left_logic(const GameInputs *inputs);
+static void turing_left_logic(const GameInputs *inputs);
+
+static void climbing_up(const GameInputs *inputs);
+static void climbing_down(const GameInputs *inputs);
+// ### END Funções internas ###
+
+/**
+ * Carrega as informações iniciais do player
+ */
 void player_setup()
 {
   PAL_setPalette(PAL1, spr_player.palette->data, DMA);
-  sprite = SPR_addSprite(&spr_player, 128, 176 - 16, TILE_ATTR_FULL(PAL1, false, false, false, 1));
-  player_x = FIX16(128);
-  player_y = FIX16(176 - 16);
-  player_set_state(GPS_RUNNING_RIGHT);
+  _sprite = SPR_addSprite(&spr_player, 128, 176 - 16, TILE_ATTR_FULL(PAL1, false, false, false, 1));
+  set_state(GPS_RUNNING_RIGHT);
 }
 
-void player_logic(const GameInputs *inputs)
+/**
+ * Logica principal do player
+ */
+GamePlayerInfo player_logic(const GameInputs *inputs)
 {
-  GamePlayerStates player_state;
+  GamePlayerInfo player_info;
+
   do
   {
-    player_state = player_get_state();
+    player_info.state = _current_state;
 
-    switch (player_state)
+    switch (player_info.state)
     {
-    case GPS_RUNNING_LEFT:
-      if (game_inputs_click(inputs->right))
-      {
-        player_set_state(GPS_TURING_RIGHT);
-        break;
-      }
+    case GPS_RUNNING_RIGHT:
+      running_right_logic(inputs);
+      break;
 
-      if (fix16ToInt(player_x) > 80)
-      {
-        player_x -= FIX16(0.9);
-      }
-      else
-      {
-        player_set_state(GPS_STOP_LEFT);
-        break;
-      }
-
-      SPR_setPosition(sprite, fix16ToInt(player_x), fix16ToInt(player_y));
+    case GPS_STOPED_RIGHT:
+      stoped_right_logic(inputs);
       break;
 
     case GPS_TURING_RIGHT:
-      if (player_done_turn())
-      {
-        player_set_state(GPS_RUNNING_RIGHT);
-        break;
-      }
-
+      turing_right_logic(inputs);
       break;
 
-    case GPS_RUNNING_RIGHT:
-      if (game_inputs_click(inputs->left))
-      {
-        player_set_state(GPS_TURING_LEFT);
-        break;
-      }
-
-      if (fix16ToInt(player_x) + 8 < 232)
-      {
-        player_x += FIX16(0.9);
-      }
-      else
-      {
-        player_set_state(GPS_STOP_RIGHT);
-        break;
-      }
-
-      SPR_setPosition(sprite, fix16ToInt(player_x), fix16ToInt(player_y));
+    case GPS_RUNNING_LEFT:
+      running_left_logic(inputs);
       break;
 
     case GPS_TURING_LEFT:
-      if (player_done_turn())
-      {
-        player_set_state(GPS_RUNNING_LEFT);
-        break;
-      }
-
+      turing_left_logic(inputs);
       break;
 
-    case GPS_CLIMBING:
-      if (game_inputs_click(inputs->right))
-      {
-        player_set_state(GPS_TURING_RIGHT);
-        break;
-      }
+    case GPS_STOPED_LEFT:
+      stoped_left_logic(inputs);
       break;
 
-    case GPS_STOP_LEFT:
-    if (game_inputs_click(inputs->right))
-      {
-        player_set_state(GPS_TURING_RIGHT);
-        break;
-      }
+    case GPS_CLIMBING_UP:
+      climbing_up(inputs);
       break;
 
-    case GPS_STOP_RIGHT:
-      if (game_inputs_click(inputs->left))
-      {
-        player_set_state(GPS_TURING_LEFT);
-        break;
-      }
+    case GPS_CLIMBING_DOWN:
+      climbing_down(inputs);
       break;
 
     default:
       break;
     }
-  } while (player_state != player_get_state());
+  } while (player_info.state != _current_state);
+
+  player_info.left_x = fix16ToInt(_x);
+  player_info.right_x = fix16ToInt(_x) + 8;
+
+  player_info.bottom_y = fix16ToInt(_y);
+  player_info.top_y = fix16ToInt(_y) + 16;
+
+  return player_info;
 }
 
-static GamePlayerStates _current_state;
-static bool _turn_complete = false;
-
-static u8 _frame_counter = 0;
-
-static void onTurnTick(Sprite *sprite)
+static void on_turn_tick(Sprite *sprite)
 {
   if (_frame_counter <= 2)
   {
@@ -149,55 +125,176 @@ static void onTurnTick(Sprite *sprite)
   SPR_setFrameChangeCallback(sprite, NULL);
 }
 
-inline static GamePlayerStates player_get_state()
+/**
+ * Atualiza o estado atual do player
+ * Ativa flag de primeira entrada
+ */
+static void set_state(GamePlayerStates state)
 {
-  return _current_state;
+  _first_entry = true;
+  _current_state = state;
 }
 
-static void player_set_state(GamePlayerStates state)
+/**
+ * Retorna true caso a flag esteja ativa e desativa ela
+ * Retorna falso quando a flag não está mais ativa
+ */
+static bool is_first_entry()
 {
-  _current_state = state;
-
-  switch (_current_state)
+  if (!_first_entry)
   {
-  case GPS_RUNNING_RIGHT:
-    SPR_setAnim(sprite, 1);
-    break;
+    return false;
+  }
+  _first_entry = false;
+  return true;
+}
 
-  case GPS_STOP_RIGHT:
-    SPR_setAnim(sprite, 0);
-    break;
+/**
+ * Estado do player correndo para esquerda
+ */
+static void running_right_logic(const GameInputs *inputs)
+{
+  if (is_first_entry())
+  {
+    SPR_setAnim(_sprite, GPA_RUNNING_RIGHT);
+  }
 
-  case GPS_TURING_RIGHT:
-    _turn_complete = false;
-    SPR_setAnim(sprite, 5);
-    SPR_setFrameChangeCallback(sprite, onTurnTick);
-    break;
+  if (game_inputs_click(inputs->left))
+  {
+    set_state(GPS_TURING_LEFT);
+    return;
+  }
 
-  case GPS_RUNNING_LEFT:
-    SPR_setAnim(sprite, 4);
-    break;
+  if (fix16ToInt(_x) + 8 < 232)
+  {
+    _x += FIX16(0.9);
+    SPR_setPosition(_sprite, fix16ToInt(_x), fix16ToInt(_y));
+    return;
+  }
 
-  case GPS_STOP_LEFT:
-    SPR_setAnim(sprite, 3);
-    break;
+  set_state(GPS_STOPED_RIGHT);
+  return;
+}
 
-  case GPS_TURING_LEFT:
-    _turn_complete = false;
-    SPR_setAnim(sprite, 2);
-    SPR_setFrameChangeCallback(sprite, onTurnTick);
-    break;
+/**
+ * Estado do player quando está parado olhando para esquerda
+ */
+static void stoped_right_logic(const GameInputs *inputs)
+{
+  if (is_first_entry())
+  {
+    SPR_setAnim(_sprite, GPA_STOPED_RIGHT);
+  }
 
-  case GPS_CLIMBING:
-    SPR_setAnim(sprite, 6);
-    break;
-
-  default:
-    break;
+  if (game_inputs_click(inputs->left))
+  {
+    set_state(GPS_TURING_LEFT);
+    return;
   }
 }
 
-inline static bool player_done_turn()
+/**
+ * Estado do player que ele está virando para esquerda
+ */
+static void turing_right_logic(const GameInputs *inputs)
 {
-  return _turn_complete;
+  if (is_first_entry())
+  {
+    _turn_complete = false;
+    SPR_setAnim(_sprite, GPA_TURING_RIGHT);
+    SPR_setFrameChangeCallback(_sprite, on_turn_tick);
+    return;
+  }
+
+  if (_turn_complete)
+  {
+    set_state(GPS_RUNNING_RIGHT);
+    return;
+  }
+}
+
+/**
+ * Estado do player correndo para esquerda
+ */
+static void running_left_logic(const GameInputs *inputs)
+{
+  if (is_first_entry())
+  {
+    SPR_setAnim(_sprite, GPA_RUNNING_LEFT);
+  }
+
+  if (game_inputs_click(inputs->right))
+  {
+    set_state(GPS_TURING_RIGHT);
+    return;
+  }
+
+  if (fix16ToInt(_x) > 80)
+  {
+    _x -= FIX16(0.9);
+    SPR_setPosition(_sprite, fix16ToInt(_x), fix16ToInt(_y));
+    return;
+  }
+
+  set_state(GPS_STOPED_LEFT);
+  return;
+}
+
+/**
+ * Estado do player quando está parado olhando para esquerda
+ */
+static void stoped_left_logic(const GameInputs *inputs)
+{
+  if (is_first_entry())
+  {
+    SPR_setAnim(_sprite, GPA_STOPED_LEFT);
+  }
+
+  if (game_inputs_click(inputs->right))
+  {
+    set_state(GPS_TURING_RIGHT);
+    return;
+  }
+}
+
+/**
+ * Estado do player que ele está virando para esquerda
+ */
+static void turing_left_logic(const GameInputs *inputs)
+{
+  if (is_first_entry())
+  {
+    _turn_complete = false;
+    SPR_setAnim(_sprite, GPA_TURING_LEFT);
+    SPR_setFrameChangeCallback(_sprite, on_turn_tick);
+    return;
+  }
+
+  if (_turn_complete)
+  {
+    set_state(GPS_RUNNING_LEFT);
+    return;
+  }
+}
+
+/**
+ *
+ */
+static void climbing_up(const GameInputs *inputs)
+{
+  if (is_first_entry())
+  {
+    SPR_setAnim(_sprite, GPA_CLIMBING);
+  }
+}
+
+/**
+ *
+ */
+static void climbing_down(const GameInputs *inputs)
+{
+  if (is_first_entry())
+  {
+    SPR_setAnim(_sprite, GPA_CLIMBING);
+  }
 }
