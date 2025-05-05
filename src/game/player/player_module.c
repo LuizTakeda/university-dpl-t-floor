@@ -19,20 +19,20 @@ typedef enum
 // ### START Variaveis globais ###
 
 static Sprite *_sprite;
+static GamePlayerStates _current_state, _last_state;
 static fix16 _x = FIX16(128);
 static fix16 _y = FIX16(176 - 16);
 static u16 _left_x, _right_x, _bottom_y, _top_y;
-static GamePlayerStates _current_state;
+static u8 _frame_counter = 0;
 static bool _turn_complete = false;
 static bool _first_entry = true;
-static u8 _frame_counter = 0;
 // ### END Variaveis globais ###
 
 // ### START Funções internas ###
 
 static void set_state(GamePlayerStates state);
 static void convert_positions_fix_to_ints();
-static bool can_climb();
+static bool can_climb_up();
 
 static void running_right_logic(const GameInputs *inputs);
 static void stoped_right_logic(const GameInputs *inputs);
@@ -94,11 +94,11 @@ GamePlayerInfo player_logic(const GameInputs *inputs)
       break;
 
     case GPS_CLIMBING_UP:
-      climbing_up(inputs);
+      climbing_up_logic(inputs);
       break;
 
     case GPS_CLIMBING_DOWN:
-      climbing_down(inputs);
+      climbing_down_logic(inputs);
       break;
 
     default:
@@ -137,6 +137,7 @@ static void on_turn_tick(Sprite *sprite)
 static void set_state(GamePlayerStates state)
 {
   _first_entry = true;
+  _last_state = _current_state;
   _current_state = state;
 }
 
@@ -169,7 +170,7 @@ static void convert_positions_fix_to_ints()
 /**
  * Verifica se o player pode subir alguma escada
  */
-static bool can_climb()
+static bool can_climb_up()
 {
   convert_positions_fix_to_ints();
 
@@ -212,7 +213,7 @@ static void running_right_logic(const GameInputs *inputs)
     return;
   }
 
-  if (game_inputs_click(inputs->up) && can_climb())
+  if (game_inputs_click(inputs->up) && can_climb_up())
   {
     set_state(GPS_CLIMBING_UP);
     return;
@@ -347,7 +348,7 @@ static void climbing_up_logic(const GameInputs *inputs)
     return;
   }
 
-  set_state(GPS_RUNNING_LEFT);
+  set_state(_last_state);
   return;
 }
 
