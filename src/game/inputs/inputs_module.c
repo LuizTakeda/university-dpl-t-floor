@@ -17,6 +17,7 @@ GameInputs game_inputs_read()
   return_value.down = read_button(current_inputs, BUTTON_DOWN);
   return_value.start = read_button(current_inputs, BUTTON_START);
   return_value.ok = read_button(current_inputs, BUTTON_A);
+  return_value.mode = read_button(current_inputs, BUTTON_MODE);
 
   return return_value;
 }

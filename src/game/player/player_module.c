@@ -225,7 +225,7 @@ static bool can_climb_up()
     }
 
     if (_left_x >= _stairs[_current_floor][i].start + 2 && _left_x <= _stairs[_current_floor][i].end - 2)
-    {   
+    {
       _x = intToFix16(_stairs[_current_floor][i].start);
       return true;
     }

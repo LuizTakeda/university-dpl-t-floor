@@ -21,6 +21,7 @@ typedef struct
   GameInputStates down;
   GameInputStates start;
   GameInputStates ok;
+  GameInputStates mode;
 } GameInputs;
 
 typedef enum
