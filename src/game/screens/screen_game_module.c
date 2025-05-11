@@ -15,7 +15,11 @@ void game_screen_game(const GameInputs *inputs)
     VDP_drawImageEx(BG_A, &img_bg, TILE_ATTR_FULL(PAL0, 0, 0, 0, 1), 0, 0, true, DMA);
 
     player_setup();
+
+    enemies_setup();
   }
 
   GamePlayerInfo player_info = player_logic(inputs);
+
+  enemies_logic(&player_info);
 }
