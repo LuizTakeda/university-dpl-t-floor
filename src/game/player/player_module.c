@@ -70,7 +70,7 @@ void player_setup()
 {
   PAL_setPalette(PAL1, spr_player.palette->data, DMA);
   _sprite = SPR_addSprite(&spr_player, 128, 176 - 16, TILE_ATTR_FULL(PAL1, false, false, false, 1));
-  set_state(GPS_RUNNING_RIGHT);
+  set_state(PLAYER_STATE_RUNNING_RIGHT);
   _stairs[FN_ONE][0].start = 104;
   _stairs[FN_ONE][0].end = 111;
   _stairs[FN_ONE][1].start = 200;
@@ -106,35 +106,35 @@ GamePlayerInfo player_logic(const GameInputs *inputs)
 
     switch (player_info.state)
     {
-    case GPS_RUNNING_RIGHT:
+    case PLAYER_STATE_RUNNING_RIGHT:
       running_right_logic(inputs);
       break;
 
-    case GPS_STOPED_RIGHT:
+    case PLAYER_STATE_STOPED_RIGHT:
       stoped_right_logic(inputs);
       break;
 
-    case GPS_TURING_RIGHT:
+    case PLAYER_STATE_TURING_RIGHT:
       turing_right_logic(inputs);
       break;
 
-    case GPS_RUNNING_LEFT:
+    case PLAYER_STATE_RUNNING_LEFT:
       running_left_logic(inputs);
       break;
 
-    case GPS_TURING_LEFT:
+    case PLAYER_STATE_TURING_LEFT:
       turing_left_logic(inputs);
       break;
 
-    case GPS_STOPED_LEFT:
+    case PLAYER_STATE_STOPED_LEFT:
       stoped_left_logic(inputs);
       break;
 
-    case GPS_CLIMBING_UP:
+    case PLAYER_STATE_CLIMBING_UP:
       climbing_up_logic(inputs);
       break;
 
-    case GPS_CLIMBING_DOWN:
+    case PLAYER_STATE_CLIMBING_DOWN:
       climbing_down_logic(inputs);
       break;
 
@@ -200,8 +200,8 @@ static void convert_positions_fix_to_ints()
   _left_x = fix16ToInt(_x);
   _right_x = fix16ToInt(_x) + 8;
 
-  _bottom_y = fix16ToInt(_y);
-  _top_y = fix16ToInt(_y) + 16;
+  _top_y = fix16ToInt(_y) ;
+  _bottom_y = fix16ToInt(_y) + 16;
 }
 
 /**
@@ -274,21 +274,21 @@ static void running_right_logic(const GameInputs *inputs)
     SPR_setAnim(_sprite, GPA_RUNNING_RIGHT);
   }
 
-  if (game_inputs_click(inputs->left))
+  if (game_inputs_hold(inputs->left))
   {
-    set_state(GPS_TURING_LEFT);
+    set_state(PLAYER_STATE_TURING_LEFT);
     return;
   }
 
   if (game_inputs_hold(inputs->up) && can_climb_up())
   {
-    set_state(GPS_CLIMBING_UP);
+    set_state(PLAYER_STATE_CLIMBING_UP);
     return;
   }
 
   if (game_inputs_hold(inputs->down) && can_climb_down())
   {
-    set_state(GPS_CLIMBING_DOWN);
+    set_state(PLAYER_STATE_CLIMBING_DOWN);
     return;
   }
 
@@ -299,7 +299,7 @@ static void running_right_logic(const GameInputs *inputs)
     return;
   }
 
-  set_state(GPS_STOPED_RIGHT);
+  set_state(PLAYER_STATE_STOPED_RIGHT);
   return;
 }
 
@@ -313,9 +313,9 @@ static void stoped_right_logic(const GameInputs *inputs)
     SPR_setAnim(_sprite, GPA_STOPED_RIGHT);
   }
 
-  if (game_inputs_click(inputs->left))
+  if (game_inputs_hold(inputs->left))
   {
-    set_state(GPS_TURING_LEFT);
+    set_state(PLAYER_STATE_TURING_LEFT);
     return;
   }
 }
@@ -335,7 +335,7 @@ static void turing_right_logic(const GameInputs *inputs)
 
   if (_turn_complete)
   {
-    set_state(GPS_RUNNING_RIGHT);
+    set_state(PLAYER_STATE_RUNNING_RIGHT);
     return;
   }
 }
@@ -350,21 +350,21 @@ static void running_left_logic(const GameInputs *inputs)
     SPR_setAnim(_sprite, GPA_RUNNING_LEFT);
   }
 
-  if (game_inputs_click(inputs->right))
+  if (game_inputs_hold(inputs->right))
   {
-    set_state(GPS_TURING_RIGHT);
+    set_state(PLAYER_STATE_TURING_RIGHT);
     return;
   }
 
   if (game_inputs_hold(inputs->up) && can_climb_up())
   {
-    set_state(GPS_CLIMBING_UP);
+    set_state(PLAYER_STATE_CLIMBING_UP);
     return;
   }
 
   if (game_inputs_hold(inputs->down) && can_climb_down())
   {
-    set_state(GPS_CLIMBING_DOWN);
+    set_state(PLAYER_STATE_CLIMBING_DOWN);
     return;
   }
 
@@ -375,7 +375,7 @@ static void running_left_logic(const GameInputs *inputs)
     return;
   }
 
-  set_state(GPS_STOPED_LEFT);
+  set_state(PLAYER_STATE_STOPED_LEFT);
   return;
 }
 
@@ -389,9 +389,9 @@ static void stoped_left_logic(const GameInputs *inputs)
     SPR_setAnim(_sprite, GPA_STOPED_LEFT);
   }
 
-  if (game_inputs_click(inputs->right))
+  if (game_inputs_hold(inputs->right))
   {
-    set_state(GPS_TURING_RIGHT);
+    set_state(PLAYER_STATE_TURING_RIGHT);
     return;
   }
 }
@@ -411,7 +411,7 @@ static void turing_left_logic(const GameInputs *inputs)
 
   if (_turn_complete)
   {
-    set_state(GPS_RUNNING_LEFT);
+    set_state(PLAYER_STATE_RUNNING_LEFT);
     return;
   }
 }
