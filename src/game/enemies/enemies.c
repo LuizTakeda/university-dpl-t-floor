@@ -94,7 +94,7 @@ static void create_enemy(EnemyType type)
 static u16 enemy_create_slime()
 {
   _enemies[_enemies_counter].type = ENEMY_TYPE_SLIME;
-  _enemies[_enemies_counter].x = FIX16(80 + (8 * (random() % 20)));
+  _enemies[_enemies_counter].x = FIX16(80 + (8 * (random() % 19)));
   _enemies[_enemies_counter].y = FIX16(168 - (32 * (random() % 4)));
   _enemies[_enemies_counter].velocity_y = 0;
   _enemies[_enemies_counter].velocity_x = FIX16(0.75);
@@ -104,7 +104,7 @@ static u16 enemy_create_slime()
       SPR_addSprite(
           &spr_enemy_01,
           fix16ToInt(_enemies[_enemies_counter].x), fix16ToInt(_enemies[_enemies_counter].y),
-          TILE_ATTR_FULL(PAL3, false, false, false, 1));
+          TILE_ATTR_FULL(PAL3, 0, false, false, 1));
 
   _enemies_counter++;
 }
@@ -220,7 +220,15 @@ static void enemy_logic_slime(Enemy *slime, const GamePlayerInfo *player_info)
     break;
 
   case ENEMY_DYING:
-    SPR_setAnim(slime->_sprite, slime->last_state == ENEMY_RUNNING_RIGHT ? 4 : 5);
+    SPR_setAnim(slime->_sprite, slime->last_state == ENEMY_RUNNING_RIGHT ? 5 : 4);
+
+    if (slime->_sprite->frameInd >= 3)
+    {
+      SPR_releaseSprite(slime->_sprite);
+      slime->dead = true;
+      break;
+    }
+
     break;
 
   default:

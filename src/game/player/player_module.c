@@ -69,7 +69,7 @@ static void climbing_down_logic(const GameInputs *inputs);
 void player_setup()
 {
   PAL_setPalette(PAL1, spr_player.palette->data, DMA);
-  _sprite = SPR_addSprite(&spr_player, 128, 176 - 16, TILE_ATTR_FULL(PAL1, false, false, false, 1));
+  _sprite = SPR_addSprite(&spr_player, 128, 176 - 16, TILE_ATTR_FULL(PAL1, 1, false, false, 1));
   set_state(PLAYER_STATE_RUNNING_RIGHT);
   _stairs[FN_ONE][0].start = 104;
   _stairs[FN_ONE][0].end = 111;
