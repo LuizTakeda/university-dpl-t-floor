@@ -4,6 +4,15 @@
 
 #include "../game.h"
 #include "../player/player.h"
+#include "../enemies/enemies.h"
+
+typedef enum
+{
+  GAME_STATE_SETUP = 0,
+  GAME_STATE_IN_LEVEL,
+  GAME_STATE_CHANING_LEVEL,
+  GAME_STATE_BOSS,
+} GameState;
 
 void game_screen_game(const GameInputs *inputs)
 {
@@ -21,5 +30,5 @@ void game_screen_game(const GameInputs *inputs)
 
   GamePlayerInfo player_info = player_logic(inputs);
 
-  enemies_logic(&player_info);
+  EnemiesEvents enemies_events = enemies_logic(&player_info);
 }

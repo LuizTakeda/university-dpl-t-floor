@@ -200,7 +200,7 @@ static void convert_positions_fix_to_ints()
   _left_x = fix16ToInt(_x);
   _right_x = fix16ToInt(_x) + 8;
 
-  _top_y = fix16ToInt(_y) ;
+  _top_y = fix16ToInt(_y);
   _bottom_y = fix16ToInt(_y) + 16;
 }
 

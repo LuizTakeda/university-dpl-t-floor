@@ -51,8 +51,10 @@ u16 num = 0;
 
 u16 counter = 0;
 
-void enemies_logic(const GamePlayerInfo *player_info)
+EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
 {
+  EnemiesEvents enemies_event = {0};
+
   counter++;
   if (num < ENEMIES_MAX && counter >= 50)
   {
@@ -76,6 +78,8 @@ void enemies_logic(const GamePlayerInfo *player_info)
       break;
     }
   }
+
+  return enemies_event;
 }
 
 static void create_enemy(EnemyType type)
@@ -225,6 +229,7 @@ static void enemy_logic_slime(Enemy *slime, const GamePlayerInfo *player_info)
     if (slime->_sprite->frameInd >= 3)
     {
       SPR_releaseSprite(slime->_sprite);
+      SPR_defragVRAM();
       slime->dead = true;
       break;
     }
