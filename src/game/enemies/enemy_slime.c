@@ -130,7 +130,9 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
     case ENEMY_STATE_SPAWNING:
       SPR_setAnim(_slime_list[i]._sprite, 1);
 
-      if (did_player_hit_enemy(&_slime_list[i], player_info))
+      _slime_list[i].data = did_player_hit_enemy(&_slime_list[i], player_info);
+
+      if (_slime_list[i].data)
       {
         _slime_list[i].last_state = _slime_list[i].state;
         _slime_list[i].state = ENEMY_DYING;
@@ -155,7 +157,9 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
 
       return_value.player_hit |= did_enemy_hit_player(&_slime_list[i], player_info);
 
-      if (did_player_hit_enemy(&_slime_list[i], player_info))
+      _slime_list[i].data = did_player_hit_enemy(&_slime_list[i], player_info);
+
+      if (_slime_list[i].data)
       {
         _slime_list[i].last_state = _slime_list[i].state;
         _slime_list[i].state = ENEMY_DYING;
@@ -177,7 +181,9 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
 
       return_value.player_hit |= did_enemy_hit_player(&_slime_list[i], player_info);
 
-      if (did_player_hit_enemy(&_slime_list[i], player_info))
+      _slime_list[i].data = did_player_hit_enemy(&_slime_list[i], player_info);
+
+      if (_slime_list[i].data)
       {
         _slime_list[i].last_state = _slime_list[i].state;
         _slime_list[i].state = ENEMY_DYING;
@@ -202,6 +208,23 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
 
     case ENEMY_DYING:
       SPR_setAnim(_slime_list[i]._sprite, _slime_list[i].last_state == ENEMY_RUNNING_RIGHT ? 5 : 4);
+
+      if (_slime_list[i]._sprite->frameInd > 0)
+      {
+        _slime_list[i].x += _slime_list[i].data == ENEMY_PLAYER_HIT_RIGHT  ? FIX16(-2)
+                            : _slime_list[i].data == ENEMY_PLAYER_HIT_LEFT ? FIX16(2)
+                                                                           : 0;
+
+        if (_slime_list[i].x > FIX16(224))
+        {
+          _slime_list[i].x = FIX16(224);
+        }
+
+        if (_slime_list[i].x < FIX16(80))
+        {
+          _slime_list[i].x = FIX16(80);
+        }
+      }
 
       if (_slime_list[i]._sprite->frameInd >= 3)
       {
@@ -251,6 +274,7 @@ static bool slime_create(u8 floor)
     _slime_list[i].velocity_x = FIX16(0.75);
     _slime_list[i].state = ENEMY_STATE_SPAWNING;
     _slime_list[i].dead = false;
+    _slime_list[i].data = 0;
     _slime_list[i]._sprite =
         SPR_addSprite(
             &spr_enemy_01,

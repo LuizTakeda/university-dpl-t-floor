@@ -66,6 +66,7 @@ void game_screen_game(const GameInputs *inputs)
 
   if (player_life == 0)
   {
+    player_clean();
     game_screen_set(GSN_GAME_OVER);
   }
 }

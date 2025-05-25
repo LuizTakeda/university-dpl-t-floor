@@ -105,6 +105,13 @@ void player_setup()
 }
 
 /**
+ * 
+ */
+void player_clean(){
+  SPR_releaseSprite(_sprite);
+}
+
+/**
  * Logica principal do player
  */
 GamePlayerInfo player_logic(const GameInputs *inputs)

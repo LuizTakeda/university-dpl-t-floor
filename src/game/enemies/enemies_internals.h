@@ -12,7 +12,7 @@ typedef enum
   ENEMY_RUNNING_LEFT,
   ENEMY_SHOOTING,
   ENEMY_IDLE,
-  ENEMY_DYING
+  ENEMY_DYING,
 } EnemyState;
 
 typedef enum
@@ -30,6 +30,7 @@ typedef struct
   bool dead;
   EnemyState last_state;
   EnemyState state;
+  u32 data;
 } Enemy;
 
 EnemyPlayerHit did_player_hit_enemy(const Enemy *enemy, const GamePlayerInfo *player_info);
