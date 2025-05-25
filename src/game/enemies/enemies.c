@@ -40,6 +40,8 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     enemy_slime_spawn(_game_level);
 
     EnemiesEvents slime_event = enemy_slime_logic(player_info);
+
+    enemies_event.enemies_dead += slime_event.enemies_dead;
   }
   break;
   case GAME_LEVEL_TWO:

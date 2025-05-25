@@ -204,6 +204,7 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
         SPR_releaseSprite(_slime_list[i]._sprite);
         _floor_quantity[_slime_list[i]._sprite->data]--;
         _slime_list[i].dead = true;
+        return_value.enemies_dead++;
         break;
       }
 
