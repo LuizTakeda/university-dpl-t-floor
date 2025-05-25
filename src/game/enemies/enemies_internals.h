@@ -32,7 +32,9 @@ typedef struct
   EnemyState state;
 } Enemy;
 
-EnemyPlayerHit enemy_did_player_hit(const Enemy *enemy, const GamePlayerInfo *player_info);
+EnemyPlayerHit did_player_hit_enemy(const Enemy *enemy, const GamePlayerInfo *player_info);
+
+bool did_enemy_hit_player(const Enemy *enemy, const GamePlayerInfo *player_info);
 
 // ### START SLIME ###
 
@@ -45,6 +47,5 @@ bool enemy_slime_spawn(GameLevel game_level);
 EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info);
 
 // ### END SLIME ###
-
 
 #endif

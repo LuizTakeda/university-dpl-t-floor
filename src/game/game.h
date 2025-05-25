@@ -51,6 +51,7 @@ typedef struct
   u16 left_x, right_x;
   u16 bottom_y, top_y;
   GamePlayerStates state;
+  bool intangible;
 } GamePlayerInfo;
 
 typedef enum{

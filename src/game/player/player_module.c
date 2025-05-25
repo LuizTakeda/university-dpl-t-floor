@@ -41,6 +41,8 @@ static bool _first_entry = true;
 static Stair _stairs[3][3];
 static FloorName _current_floor = FN_ONE;
 static u16 _floor_limit[4] = {160, 128, 96, 64};
+static bool _intangible = false;
+static u8 _intangible_counter_down = 0;
 // ### END Variaveis globais ###
 
 // ### START Funções internas ###
@@ -70,6 +72,15 @@ void player_setup()
   PAL_setPalette(PAL1, spr_player.palette->data, DMA);
   _sprite = SPR_addSprite(&spr_player, 128, 176 - 16, TILE_ATTR_FULL(PAL1, 1, false, false, _tile_index));
   set_state(PLAYER_STATE_RUNNING_RIGHT);
+
+  _frame_counter = 0;
+  _turn_complete = false;
+  _first_entry = true;
+  _current_floor = FN_ONE;
+  _intangible = false;
+  _intangible_counter_down = 0;
+  _x = FIX16(128);
+  _y = FIX16(176 - 16);
 
   _stairs[FN_ONE][0].start = 104;
   _stairs[FN_ONE][0].end = 111;
@@ -143,6 +154,26 @@ GamePlayerInfo player_logic(const GameInputs *inputs)
     }
   } while (player_info.state != _current_state);
 
+  if (_intangible)
+  {
+    _intangible_counter_down--;
+
+    if (_intangible_counter_down % 4 == 0)
+    {
+      SPR_setVisibility(_sprite, VISIBLE);
+    }
+    else
+    {
+      SPR_setVisibility(_sprite, HIDDEN);
+    }
+
+    if (_intangible_counter_down == 0)
+    {
+      _intangible = false;
+      SPR_setVisibility(_sprite, VISIBLE);
+    }
+  }
+
   convert_positions_fix_to_ints();
 
   player_info.left_x = _left_x;
@@ -151,9 +182,22 @@ GamePlayerInfo player_logic(const GameInputs *inputs)
   player_info.bottom_y = _bottom_y;
   player_info.top_y = _top_y;
 
+  player_info.intangible = _intangible;
+
   return player_info;
 }
 
+void player_hit()
+{
+  if (_intangible)
+    return;
+  _intangible = true;
+  _intangible_counter_down = 50;
+}
+
+/**
+ *
+ */
 static void on_turn_tick(Sprite *sprite)
 {
   if (_frame_counter <= 2)

@@ -11,6 +11,14 @@ void game_screen_game_over(const GameInputs *inputs)
     VDP_clearPlane(BG_A, 1);
     VDP_clearPlane(BG_B, 1);
     VDP_clearPlane(WINDOW, 1);
-    VDP_drawImageEx(BG_A, &img_bg, TILE_ATTR_FULL(PAL0, 0, 0, 0, 1), 0, 0, true, DMA);
+    VDP_resetScreen();
+    VDP_resetSprites();
+
+    VDP_drawText("GAME OVER", 1, 1);
+
+  }
+  
+  if(inputs->ok){
+    game_screen_set(GSN_START);
   }
 }

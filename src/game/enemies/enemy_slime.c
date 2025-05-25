@@ -130,7 +130,7 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
     case ENEMY_STATE_SPAWNING:
       SPR_setAnim(_slime_list[i]._sprite, 1);
 
-      if (enemy_did_player_hit(&_slime_list[i], player_info))
+      if (did_player_hit_enemy(&_slime_list[i], player_info))
       {
         _slime_list[i].last_state = _slime_list[i].state;
         _slime_list[i].state = ENEMY_DYING;
@@ -153,7 +153,9 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
     case ENEMY_RUNNING_RIGHT:
       SPR_setAnim(_slime_list[i]._sprite, 2);
 
-      if (enemy_did_player_hit(&_slime_list[i], player_info))
+      return_value.player_hit |= did_enemy_hit_player(&_slime_list[i], player_info);
+
+      if (did_player_hit_enemy(&_slime_list[i], player_info))
       {
         _slime_list[i].last_state = _slime_list[i].state;
         _slime_list[i].state = ENEMY_DYING;
@@ -173,7 +175,9 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
     case ENEMY_RUNNING_LEFT:
       SPR_setAnim(_slime_list[i]._sprite, 3);
 
-      if (enemy_did_player_hit(&_slime_list[i], player_info))
+      return_value.player_hit |= did_enemy_hit_player(&_slime_list[i], player_info);
+
+      if (did_player_hit_enemy(&_slime_list[i], player_info))
       {
         _slime_list[i].last_state = _slime_list[i].state;
         _slime_list[i].state = ENEMY_DYING;

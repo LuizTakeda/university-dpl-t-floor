@@ -7,4 +7,6 @@ void player_setup();
 
 GamePlayerInfo player_logic(const GameInputs *inputs);
 
+void player_hit();
+
 #endif
