@@ -3,6 +3,10 @@
 #include "game.h"
 #include "inputs/inputs.h"
 
+// ### START Globals ###
+u16 _tile_index = TILE_USER_INDEX; 
+// ### END Globals ###
+
 static GameScreenName get_current_screen();
 
 /**

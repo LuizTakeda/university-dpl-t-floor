@@ -21,11 +21,13 @@ void game_screen_game(const GameInputs *inputs)
     VDP_clearPlane(BG_A, 1);
     VDP_clearPlane(BG_B, 1);
     VDP_clearPlane(WINDOW, 1);
-    VDP_drawImageEx(BG_A, &img_bg, TILE_ATTR_FULL(PAL0, 0, 0, 0, 1), 0, 0, true, DMA);
+
+    VDP_drawImageEx(BG_A, &img_bg, TILE_ATTR_FULL(PAL0, 0, 0, 0, _tile_index), 0, 0, true, DMA);
+    _tile_index += img_bg.tileset->numTile;
 
     player_setup();
 
-    enemies_setup();
+    enemies_setup(GAME_LEVEL_ONE);
   }
 
   GamePlayerInfo player_info = player_logic(inputs);

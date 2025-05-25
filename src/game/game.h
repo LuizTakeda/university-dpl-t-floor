@@ -53,6 +53,21 @@ typedef struct
   GamePlayerStates state;
 } GamePlayerInfo;
 
+typedef enum{
+  GAME_LEVEL_ONE = 1,
+  GAME_LEVEL_TWO,
+  GAME_LEVEL_THREE,
+  GAME_LEVEL_FOUR,
+  GAME_LEVEL_FIVE,
+  GAME_LEVEL_SIX,
+  GAME_LEVEL_SEVEN,
+  GAME_LEVEL_EIGHT,
+}GameLevel;
+
+// ### START Globals ###
+extern u16 _tile_index;
+// ### END GLobals ###
+
 // ### START Functions ###
 
 /**

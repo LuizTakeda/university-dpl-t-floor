@@ -22,6 +22,8 @@ int main(bool resetType)
 		SYS_hardReset();
 	}
 
+	SYS_showFrameLoad(true);
+
 	game_setup();
 
 	while (true)

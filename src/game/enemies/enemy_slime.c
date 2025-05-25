@@ -1,0 +1,255 @@
+#include <genesis.h>
+#include <resources.h>
+#include <sprite_eng.h>
+
+#include "enemies_internals.h"
+
+#define SLIME_LIMIT 20
+#define SLIME_FLOORS 4
+#define SLIME_LIMIT_FLOOR (SLIME_LIMIT / SLIME_FLOORS)
+
+//*********************************************************************
+//
+//*********************************************************************
+
+Enemy _slime_list[SLIME_LIMIT];
+
+u8 _floor_quantity[SLIME_FLOORS] = {0};
+
+u16 **_slime_sprite_indexes;
+
+u16 _spawn_counter = 0;
+
+//*********************************************************************
+//
+//*********************************************************************
+
+static bool slime_create(u8 floor);
+static void slime_frame_change(Sprite *sprite);
+
+//*********************************************************************
+//
+//*********************************************************************
+
+/**
+ *
+ */
+void enemy_slime_setup()
+{
+  // Carregando todos os frames em memoria
+  u16 num_tiles;
+  _slime_sprite_indexes = SPR_loadAllFrames(&spr_enemy_01, _tile_index, &num_tiles);
+  _tile_index += num_tiles;
+
+  for (u8 i = 0; i < SLIME_FLOORS; i++)
+  {
+    _floor_quantity[i] = 0;
+  }
+
+  for (u8 i = 0; i < SLIME_LIMIT; i++)
+  {
+    _slime_list[i].dead = true;
+  }
+}
+
+void enemy_slime_clean()
+{
+  for (u8 i = 0; i < SLIME_FLOORS; i++)
+  {
+    _floor_quantity[i] = 0;
+  }
+
+  for (u8 i = 0; i < SLIME_LIMIT; i++)
+  {
+    _slime_list[i].dead = true;
+    SPR_releaseSprite(_slime_list[i]._sprite);
+  }
+
+  SPR_defragVRAM();
+}
+
+/**
+ *
+ */
+bool enemy_slime_spawn(GameLevel game_level)
+{
+  if (_spawn_counter < 50)
+  {
+    _spawn_counter++;
+    return false;
+  }
+
+  _spawn_counter = 0;
+
+  for (u8 i = 0; i < SLIME_FLOORS; i++)
+  {
+    if (slime_create(i))
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ *
+ */
+EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
+{
+  EnemiesEvents return_value;
+  return_value.player_hit = false;
+  return_value.enemies_dead = 0;
+
+  for (u8 i = 0; i < SLIME_LIMIT; i++)
+  {
+    if (_slime_list[i].dead)
+    {
+      continue;
+    }
+
+    switch (_slime_list[i].state)
+    {
+    case ENEMY_STATE_SPAWNING:
+      SPR_setAnim(_slime_list[i]._sprite, 1);
+
+      if (enemy_did_player_hit(&_slime_list[i], player_info))
+      {
+        _slime_list[i].last_state = _slime_list[i].state;
+        _slime_list[i].state = ENEMY_DYING;
+        break;
+      }
+
+      if (_slime_list[i]._sprite->frameInd == 4)
+      {
+        if (random() % 2)
+        {
+          _slime_list[i].state = ENEMY_RUNNING_RIGHT;
+          break;
+        }
+
+        _slime_list[i].state = ENEMY_RUNNING_LEFT;
+        break;
+      }
+      break;
+
+    case ENEMY_RUNNING_RIGHT:
+      SPR_setAnim(_slime_list[i]._sprite, 2);
+
+      if (enemy_did_player_hit(&_slime_list[i], player_info))
+      {
+        _slime_list[i].last_state = _slime_list[i].state;
+        _slime_list[i].state = ENEMY_DYING;
+        break;
+      }
+
+      _slime_list[i].x += _slime_list[i].velocity_x;
+
+      if (_slime_list[i].x > FIX16(224))
+      {
+        _slime_list[i].x = FIX16(224);
+        _slime_list[i].state = ENEMY_RUNNING_LEFT;
+        break;
+      }
+      break;
+
+    case ENEMY_RUNNING_LEFT:
+      SPR_setAnim(_slime_list[i]._sprite, 3);
+
+      if (enemy_did_player_hit(&_slime_list[i], player_info))
+      {
+        _slime_list[i].last_state = _slime_list[i].state;
+        _slime_list[i].state = ENEMY_DYING;
+        break;
+      }
+
+      _slime_list[i].x -= _slime_list[i].velocity_x;
+
+      if (_slime_list[i].x < FIX16(80))
+      {
+        _slime_list[i].x = FIX16(80);
+        _slime_list[i].state = ENEMY_RUNNING_RIGHT;
+        break;
+      }
+      break;
+
+    case ENEMY_SHOOTING:
+      break;
+
+    case ENEMY_IDLE:
+      break;
+
+    case ENEMY_DYING:
+      SPR_setAnim(_slime_list[i]._sprite, _slime_list[i].last_state == ENEMY_RUNNING_RIGHT ? 5 : 4);
+
+      if (_slime_list[i]._sprite->frameInd >= 3)
+      {
+        SPR_releaseSprite(_slime_list[i]._sprite);
+        _floor_quantity[_slime_list[i]._sprite->data]--;
+        _slime_list[i].dead = true;
+        break;
+      }
+
+      break;
+
+    default:
+      break;
+    }
+
+    SPR_setPosition(_slime_list[i]._sprite, fix16ToInt(_slime_list[i].x), fix16ToInt(_slime_list[i].y));
+  }
+
+  return return_value;
+}
+
+//*********************************************************************
+//
+//*********************************************************************
+
+/**
+ *
+ */
+static bool slime_create(u8 floor)
+{
+  if (_floor_quantity[floor] >= SLIME_LIMIT_FLOOR)
+  {
+    return false;
+  }
+
+  for (u8 i = 0; i < SLIME_LIMIT; i++)
+  {
+    if (!_slime_list[i].dead)
+    {
+      continue;
+    }
+
+    _slime_list[i].x = FIX16(80 + (8 * (random() % 19)));
+    _slime_list[i].y = FIX16(168 - (32 * floor));
+    _slime_list[i].velocity_y = 0;
+    _slime_list[i].velocity_x = FIX16(0.75);
+    _slime_list[i].state = ENEMY_STATE_SPAWNING;
+    _slime_list[i].dead = false;
+    _slime_list[i]._sprite =
+        SPR_addSprite(
+            &spr_enemy_01,
+            fix16ToInt(_slime_list[i].x), fix16ToInt(_slime_list[i].y),
+            TILE_ATTR_FULL(PAL3, 0, false, false, _tile_index));
+
+    _slime_list[i]._sprite->data = floor;
+
+    SPR_setAutoTileUpload(_slime_list[i]._sprite, FALSE);
+    SPR_setFrameChangeCallback(_slime_list[i]._sprite, &slime_frame_change);
+
+    _floor_quantity[floor]++;
+    return true;
+  }
+
+  return false;
+}
+
+static void slime_frame_change(Sprite *sprite)
+{
+  u16 tileIndex = _slime_sprite_indexes[sprite->animInd][sprite->frameInd];
+
+  SPR_setVRAMTileIndex(sprite, tileIndex);
+}
