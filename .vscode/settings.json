@@ -23,7 +23,8 @@
         "limits": "c",
         "globals.h": "c",
         "inputs.h": "c",
-        "game.h": "c"
+        "game.h": "c",
+        "array": "c"
     },
     "gens.path": "C:\\Users\\umota\\Documents\\1-Faculdade\\0-Materias\\Legados\\Gens_KMod\\gens"
 }

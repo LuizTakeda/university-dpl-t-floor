@@ -81,9 +81,26 @@ bool enemy_slime_spawn(GameLevel game_level)
 
   _spawn_counter = 0;
 
+  u8 array[SLIME_FLOORS];
+
+  // Preenche o array com valores de 0 até SLIME_FLOORS - 1
   for (u8 i = 0; i < SLIME_FLOORS; i++)
   {
-    if (slime_create(i))
+    array[i] = i;
+  }
+
+  // Embaralha o array usando Fisher-Yates
+  for (u8 i = SLIME_FLOORS - 1; i > 0; i--)
+  {
+    u8 j = random() % (i + 1);
+    u8 temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+
+  for (u8 i = 0; i < SLIME_FLOORS; i++)
+  {
+    if (slime_create(array[i]))
     {
       return true;
     }
