@@ -15,7 +15,11 @@ typedef enum
 } GameState;
 
 uint16_t score = 0;
+uint16_t score_target = 50;
+
 uint16_t player_life = 3;
+
+GameLevel _current_level = GAME_LEVEL_ONE;
 
 void game_screen_game(const GameInputs *inputs)
 {
@@ -34,13 +38,14 @@ void game_screen_game(const GameInputs *inputs)
 
     player_setup();
 
-    enemies_setup(GAME_LEVEL_ONE);
+    enemies_setup(_current_level);
 
     score = 0;
     player_life = 3;
 
-    VDP_drawText("50/0", 1, 2);
-    VDP_drawText("3", 1, 4);
+    VDP_drawText("KILLS 50/0", 1, 2);
+    VDP_drawText("LIFE 3", 1, 4);
+    VDP_drawText("LEVEL 0", 1, 6);
   }
 
   GamePlayerInfo player_info = player_logic(inputs);
@@ -50,16 +55,28 @@ void game_screen_game(const GameInputs *inputs)
   if (enemies_events.enemies_dead > 0)
   {
     score += enemies_events.enemies_dead;
-    char str[6];
-    sprintf(str, "50/%d", score);
+    char str[12];
+    sprintf(str, "KILLS %d/%d", score_target, score);
     VDP_drawText(str, 1, 2);
+  }
+
+  if (score >= 50)
+  {
+    _current_level++;
+    score = 0;
+    score_target += 25;
+    char str[10];
+    sprintf(str, "LEVEL %d", _current_level + 1);
+    VDP_drawText(str, 1, 4);
+    enemies_clean();
+    enemies_next_level(_current_level);
   }
 
   if (enemies_events.player_hit)
   {
     player_life--;
-    char str[6];
-    sprintf(str, "%d", player_life);
+    char str[10];
+    sprintf(str, "LIFE %d", player_life);
     VDP_drawText(str, 1, 4);
     player_hit();
   }

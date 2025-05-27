@@ -61,8 +61,11 @@ void enemy_slime_clean()
 
   for (u8 i = 0; i < SLIME_LIMIT; i++)
   {
+    if (!_slime_list[i].dead)
+    {
+      SPR_releaseSprite(_slime_list[i]._sprite);
+    }
     _slime_list[i].dead = true;
-    SPR_releaseSprite(_slime_list[i]._sprite);
   }
 
   SPR_defragVRAM();

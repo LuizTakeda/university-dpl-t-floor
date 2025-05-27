@@ -21,11 +21,19 @@ void enemies_setup(GameLevel level)
   enemy_bat_setup();
 }
 
+void enemies_next_level(GameLevel level)
+{
+  _game_level = level;
+}
+
 /**
  *
  */
 void enemies_clean()
 {
+  enemy_slime_clean();
+
+  enemy_bat_clean();
 }
 
 /**
@@ -36,6 +44,8 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
   EnemiesEvents enemies_event;
   enemies_event.enemies_dead = 0;
   enemies_event.player_hit = false;
+
+  
 
   switch (_game_level)
   {
@@ -49,19 +59,119 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     enemies_event.player_hit |= slime_event.player_hit;
   }
   break;
+
   case GAME_LEVEL_TWO:
+   { enemy_slime_spawn(_game_level);
+
+    enemy_bat_spawn(_game_level);
+
+    EnemiesEvents slime_event = enemy_slime_logic(player_info);
+
+    enemies_event.enemies_dead += slime_event.enemies_dead;
+    enemies_event.player_hit |= slime_event.player_hit;
+
+    EnemiesEvents bat_event = enemy_bat_logic(player_info);
+
+    enemies_event.enemies_dead += bat_event.enemies_dead;
+    enemies_event.player_hit |= bat_event.player_hit;}
     break;
+
   case GAME_LEVEL_THREE:
+    {enemy_slime_spawn(_game_level);
+
+    enemy_bat_spawn(_game_level);
+
+    EnemiesEvents slime_event = enemy_slime_logic(player_info);
+
+    enemies_event.enemies_dead += slime_event.enemies_dead;
+    enemies_event.player_hit |= slime_event.player_hit;
+
+    EnemiesEvents bat_event = enemy_bat_logic(player_info);
+
+    enemies_event.enemies_dead += bat_event.enemies_dead;
+    enemies_event.player_hit |= bat_event.player_hit;}
     break;
+
   case GAME_LEVEL_FOUR:
+   { enemy_slime_spawn(_game_level);
+
+    enemy_bat_spawn(_game_level);
+
+    EnemiesEvents slime_event = enemy_slime_logic(player_info);
+
+    enemies_event.enemies_dead += slime_event.enemies_dead;
+    enemies_event.player_hit |= slime_event.player_hit;
+
+    EnemiesEvents bat_event = enemy_bat_logic(player_info);
+
+    enemies_event.enemies_dead += bat_event.enemies_dead;
+    enemies_event.player_hit |= bat_event.player_hit;}
     break;
+
   case GAME_LEVEL_FIVE:
+    {enemy_slime_spawn(_game_level);
+
+    enemy_bat_spawn(_game_level);
+
+    EnemiesEvents slime_event = enemy_slime_logic(player_info);
+
+    enemies_event.enemies_dead += slime_event.enemies_dead;
+    enemies_event.player_hit |= slime_event.player_hit;
+
+    EnemiesEvents bat_event = enemy_bat_logic(player_info);
+
+    enemies_event.enemies_dead += bat_event.enemies_dead;
+    enemies_event.player_hit |= bat_event.player_hit;}
     break;
+
   case GAME_LEVEL_SIX:
+    {enemy_slime_spawn(_game_level);
+
+    enemy_bat_spawn(_game_level);
+
+    EnemiesEvents slime_event = enemy_slime_logic(player_info);
+
+    enemies_event.enemies_dead += slime_event.enemies_dead;
+    enemies_event.player_hit |= slime_event.player_hit;
+
+    EnemiesEvents bat_event = enemy_bat_logic(player_info);
+
+    enemies_event.enemies_dead += bat_event.enemies_dead;
+    enemies_event.player_hit |= bat_event.player_hit;}
     break;
+
   case GAME_LEVEL_SEVEN:
+    {enemy_slime_spawn(_game_level);
+
+    enemy_bat_spawn(_game_level);
+
+    EnemiesEvents slime_event = enemy_slime_logic(player_info);
+
+    enemies_event.enemies_dead += slime_event.enemies_dead;
+    enemies_event.player_hit |= slime_event.player_hit;
+
+    EnemiesEvents bat_event = enemy_bat_logic(player_info);
+
+    enemies_event.enemies_dead += bat_event.enemies_dead;
+    enemies_event.player_hit |= bat_event.player_hit;}
     break;
+
   case GAME_LEVEL_EIGHT:
+  {
+    enemy_slime_spawn(_game_level);
+
+    enemy_bat_spawn(_game_level);
+
+    EnemiesEvents slime_event = enemy_slime_logic(player_info);
+
+    enemies_event.enemies_dead += slime_event.enemies_dead;
+    enemies_event.player_hit |= slime_event.player_hit;
+
+    EnemiesEvents bat_event = enemy_bat_logic(player_info);
+
+    enemies_event.enemies_dead += bat_event.enemies_dead;
+    enemies_event.player_hit |= bat_event.player_hit;
+  }
     break;
 
   default:
@@ -113,14 +223,16 @@ bool did_enemy_hit_player(const Enemy *enemy, const GamePlayerInfo *player_info)
 
   if (player_info->state == PLAYER_STATE_RUNNING_LEFT)
   {
-    if(fix16ToInt(enemy->x) + enemy->_sprite->definition->w - 1<= player_info->right_x){
+    if (fix16ToInt(enemy->x) + enemy->_sprite->definition->w - 1 <= player_info->right_x)
+    {
       return false;
     }
   }
 
   if (player_info->state == PLAYER_STATE_RUNNING_RIGHT)
   {
-    if(fix16ToInt(enemy->x) >= player_info->left_x){
+    if (fix16ToInt(enemy->x) >= player_info->left_x)
+    {
       return false;
     }
   }

@@ -10,6 +10,8 @@ typedef struct{
 
 void enemies_setup(GameLevel level);
 
+void enemies_next_level(GameLevel level);
+
 void enemies_clean();
 
 EnemiesEvents enemies_logic(const GamePlayerInfo *player_info);
