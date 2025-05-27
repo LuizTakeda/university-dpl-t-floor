@@ -215,6 +215,8 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
                             : _slime_list[i].data == ENEMY_PLAYER_HIT_LEFT ? FIX16(2)
                                                                            : 0;
 
+        _slime_list[i].y -= FIX16(.75);
+
         if (_slime_list[i].x > FIX16(224))
         {
           _slime_list[i].x = FIX16(224);

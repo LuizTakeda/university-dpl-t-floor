@@ -49,4 +49,16 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info);
 
 // ### END SLIME ###
 
+// ### START BAT ###
+
+void enemy_bat_setup();
+
+void enemy_bat_clean();
+
+bool enemy_bat_spawn(GameLevel game_level);
+
+EnemiesEvents enemy_bat_logic(const GamePlayerInfo *player_info);
+
+// ### END BAT ###
+
 #endif

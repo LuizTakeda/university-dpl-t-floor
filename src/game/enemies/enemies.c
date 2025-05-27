@@ -17,6 +17,8 @@ void enemies_setup(GameLevel level)
   PAL_setPalette(PAL3, spr_enemy_01.palette->data, DMA);
 
   enemy_slime_setup();
+
+  enemy_bat_setup();
 }
 
 /**
