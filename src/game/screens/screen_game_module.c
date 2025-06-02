@@ -38,14 +38,17 @@ void game_screen_game(const GameInputs *inputs)
 
     player_setup();
 
+    _current_level = GAME_LEVEL_ONE;
+    
     enemies_setup(_current_level);
 
     score = 0;
     player_life = 3;
+    score_target = 50;
 
     VDP_drawText("KILLS 50/0", 1, 2);
     VDP_drawText("LIFE 3", 1, 4);
-    VDP_drawText("LEVEL 0", 1, 6);
+    VDP_drawText("LEVEL 1", 1, 6);
   }
 
   GamePlayerInfo player_info = player_logic(inputs);
