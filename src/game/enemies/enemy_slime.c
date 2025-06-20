@@ -8,6 +8,11 @@
 #define SLIME_FLOORS 4
 #define SLIME_LIMIT_FLOOR (SLIME_LIMIT / SLIME_FLOORS)
 
+#define SLIME_HIT_BOX_OFFSET_LEFT_X 1
+#define SLIME_HIT_BOX_OFFSET_RIGHT_X 1
+#define SLIME_HIT_BOX_OFFSET_TOP_T 1
+#define SLIME_HIT_BOX_OFFSET_BOTTOM_X 0
+
 //*********************************************************************
 //
 //*********************************************************************
@@ -245,6 +250,12 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
     default:
       break;
     }
+
+    _slime_list[i].hit_box_left_x = fix16ToInt(_slime_list[i].x) + SLIME_HIT_BOX_OFFSET_LEFT_X;
+    _slime_list[i].hit_box_right_x = fix16ToInt(_slime_list[i].x) + _slime_list[i]._sprite->definition->w - 1 - SLIME_HIT_BOX_OFFSET_RIGHT_X;
+
+    _slime_list[i].hit_box_top_y = fix16ToInt(_slime_list[i].y) + SLIME_HIT_BOX_OFFSET_TOP_T;
+    _slime_list[i].hit_box_bottom_y = fix16ToInt(_slime_list[i].y) + _slime_list[i]._sprite->definition->h - 1 - SLIME_HIT_BOX_OFFSET_BOTTOM_X;
 
     SPR_setPosition(_slime_list[i]._sprite, fix16ToInt(_slime_list[i].x), fix16ToInt(_slime_list[i].y));
   }

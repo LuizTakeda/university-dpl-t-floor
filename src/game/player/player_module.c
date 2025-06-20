@@ -34,7 +34,7 @@ static Sprite *_sprite;
 static GamePlayerStates _current_state, _last_state;
 static fix16 _x = FIX16(128);
 static fix16 _y = FIX16(176 - 16);
-static u16 _left_x, _right_x, _bottom_y, _top_y;
+static u16 _left_x, _right_x, _middle_x, _bottom_y, _top_y;
 static u8 _frame_counter = 0;
 static bool _turn_complete = false;
 static bool _first_entry = true;
@@ -105,9 +105,10 @@ void player_setup()
 }
 
 /**
- * 
+ *
  */
-void player_clean(){
+void player_clean()
+{
   SPR_releaseSprite(_sprite);
 }
 
@@ -186,6 +187,8 @@ GamePlayerInfo player_logic(const GameInputs *inputs)
   player_info.left_x = _left_x;
   player_info.right_x = _right_x;
 
+  player_info.middle_x = _middle_x;
+
   player_info.bottom_y = _bottom_y;
   player_info.top_y = _top_y;
 
@@ -249,10 +252,12 @@ static bool is_first_entry()
 static void convert_positions_fix_to_ints()
 {
   _left_x = fix16ToInt(_x);
-  _right_x = fix16ToInt(_x) + 8;
+  _right_x = fix16ToInt(_x) + _sprite->definition->w - 1;
+
+  _middle_x = fix16ToInt(_x) + (_sprite->definition->w / 2) - 1;
 
   _top_y = fix16ToInt(_y);
-  _bottom_y = fix16ToInt(_y) + 16;
+  _bottom_y = fix16ToInt(_y) + _sprite->definition->h - 1;
 }
 
 /**

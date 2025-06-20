@@ -111,14 +111,14 @@ static void state_setup(const GameInputs *inputs)
   VDP_drawImageEx(BG_A, &img_bg, TILE_ATTR_FULL(PAL0, 0, 0, 0, _tile_index), 0, 0, true, DMA);
   _tile_index += img_bg.tileset->numTile;
 
-  // Setup
-  player_setup();
-  enemies_setup(_current_level);
-
   // Initial values
   set_player_life(START_PLAYER_LIFE);
   set_score(0, START_TARGET_SCORE);
-  set_level(GAME_LEVEL_ONE);
+  set_level(GAME_LEVEL_TWO);
+
+  // Setup
+  player_setup();
+  enemies_setup(_current_level);
 
   // Change game state to
   _game_state = GAME_STATE_IN_LEVEL;
@@ -166,7 +166,7 @@ static void state_in_level(const GameInputs *inputs)
 static void state_changing_level(const GameInputs *inputs)
 {
   set_level(_current_level + 1);
-  set_score(_score, _target_score + PLUS_TARGET_SCORE);
+  set_score(0, _target_score + PLUS_TARGET_SCORE);
   set_player_life(_player_life + 1);
 
   enemies_clean();

@@ -7,8 +7,13 @@
 //
 //**************************************************
 
-#define BAT_LIMIT 10
-#define BAT_SPAWN_RATE 100
+#define BAT_LIMIT 5
+#define BAT_SPAWN_RATE 150
+
+#define BAT_HIT_BOX_OFFSET_LEFT_X 1
+#define BAT_HIT_BOX_OFFSET_RIGHT_X 1
+#define BAT_HIT_BOX_OFFSET_TOP_X 1
+#define BAT_HIT_BOX_OFFSET_BOTTOM_X 0 
 
 //**************************************************
 //
@@ -57,7 +62,7 @@ void enemy_bat_clean()
 
   for (u8 i = 0; i < BAT_LIMIT; i++)
   {
-    if(!_bat_list[i].dead)
+    if (!_bat_list[i].dead)
     {
       SPR_releaseSprite(_bat_list[i]._sprite);
     }
@@ -199,6 +204,12 @@ EnemiesEvents enemy_bat_logic(const GamePlayerInfo *player_info)
       break;
     }
 
+    _bat_list[i].hit_box_left_x = fix16ToInt(_bat_list[i].x) + BAT_HIT_BOX_OFFSET_LEFT_X;
+    _bat_list[i].hit_box_right_x = fix16ToInt(_bat_list[i].x) + _bat_list[i]._sprite->definition->w - 1 - BAT_HIT_BOX_OFFSET_RIGHT_X;
+
+    _bat_list[i].hit_box_top_y = fix16ToInt(_bat_list[i].y) + BAT_HIT_BOX_OFFSET_TOP_X;
+    _bat_list[i].hit_box_bottom_y = fix16ToInt(_bat_list[i].y) + _bat_list[i]._sprite->definition->h - 1 - BAT_HIT_BOX_OFFSET_BOTTOM_X;
+
     SPR_setPosition(_bat_list[i]._sprite, fix16ToInt(_bat_list[i].x), fix16ToInt(_bat_list[i].y));
   }
 
@@ -220,8 +231,8 @@ static bool bat_create()
 
     _bat_list[i].x = FIX16(80 + (random() % (231 - 80)));
     _bat_list[i].y = FIX16(56 + (random() % (175 - 56)));
-    _bat_list[i].velocity_x = FIX16(.6);
-    _bat_list[i].velocity_y = FIX16(.3);
+    _bat_list[i].velocity_x = FIX16(.7);
+    _bat_list[i].velocity_y = FIX16(.2);
     _bat_list[i]
         .dead = false;
     _bat_list[i].state = ENEMY_STATE_SPAWNING;

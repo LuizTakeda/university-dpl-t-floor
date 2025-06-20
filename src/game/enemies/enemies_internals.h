@@ -27,8 +27,8 @@ typedef struct
 {
   Sprite *_sprite;
   fix16 x, y;
-  fix16 hit_box_left_x, hit_box_right_x, hit_box_top_y, hit_box_bottom_y;
   fix16 velocity_x, velocity_y;
+  u16 hit_box_left_x, hit_box_right_x, hit_box_top_y, hit_box_bottom_y;
   bool dead;
   EnemyState last_state;
   EnemyState state;
