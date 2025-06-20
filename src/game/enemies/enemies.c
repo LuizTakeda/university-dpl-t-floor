@@ -45,8 +45,6 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
   enemies_event.enemies_dead = 0;
   enemies_event.player_hit = false;
 
-  
-
   switch (_game_level)
   {
   case GAME_LEVEL_ONE:
@@ -61,7 +59,8 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
   break;
 
   case GAME_LEVEL_TWO:
-   { enemy_slime_spawn(_game_level);
+  {
+    enemy_slime_spawn(_game_level);
 
     enemy_bat_spawn(_game_level);
 
@@ -73,11 +72,13 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     EnemiesEvents bat_event = enemy_bat_logic(player_info);
 
     enemies_event.enemies_dead += bat_event.enemies_dead;
-    enemies_event.player_hit |= bat_event.player_hit;}
-    break;
+    enemies_event.player_hit |= bat_event.player_hit;
+  }
+  break;
 
   case GAME_LEVEL_THREE:
-    {enemy_slime_spawn(_game_level);
+  {
+    enemy_slime_spawn(_game_level);
 
     enemy_bat_spawn(_game_level);
 
@@ -89,11 +90,13 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     EnemiesEvents bat_event = enemy_bat_logic(player_info);
 
     enemies_event.enemies_dead += bat_event.enemies_dead;
-    enemies_event.player_hit |= bat_event.player_hit;}
-    break;
+    enemies_event.player_hit |= bat_event.player_hit;
+  }
+  break;
 
   case GAME_LEVEL_FOUR:
-   { enemy_slime_spawn(_game_level);
+  {
+    enemy_slime_spawn(_game_level);
 
     enemy_bat_spawn(_game_level);
 
@@ -105,11 +108,13 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     EnemiesEvents bat_event = enemy_bat_logic(player_info);
 
     enemies_event.enemies_dead += bat_event.enemies_dead;
-    enemies_event.player_hit |= bat_event.player_hit;}
-    break;
+    enemies_event.player_hit |= bat_event.player_hit;
+  }
+  break;
 
   case GAME_LEVEL_FIVE:
-    {enemy_slime_spawn(_game_level);
+  {
+    enemy_slime_spawn(_game_level);
 
     enemy_bat_spawn(_game_level);
 
@@ -121,11 +126,13 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     EnemiesEvents bat_event = enemy_bat_logic(player_info);
 
     enemies_event.enemies_dead += bat_event.enemies_dead;
-    enemies_event.player_hit |= bat_event.player_hit;}
-    break;
+    enemies_event.player_hit |= bat_event.player_hit;
+  }
+  break;
 
   case GAME_LEVEL_SIX:
-    {enemy_slime_spawn(_game_level);
+  {
+    enemy_slime_spawn(_game_level);
 
     enemy_bat_spawn(_game_level);
 
@@ -137,11 +144,13 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     EnemiesEvents bat_event = enemy_bat_logic(player_info);
 
     enemies_event.enemies_dead += bat_event.enemies_dead;
-    enemies_event.player_hit |= bat_event.player_hit;}
-    break;
+    enemies_event.player_hit |= bat_event.player_hit;
+  }
+  break;
 
   case GAME_LEVEL_SEVEN:
-    {enemy_slime_spawn(_game_level);
+  {
+    enemy_slime_spawn(_game_level);
 
     enemy_bat_spawn(_game_level);
 
@@ -153,8 +162,9 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     EnemiesEvents bat_event = enemy_bat_logic(player_info);
 
     enemies_event.enemies_dead += bat_event.enemies_dead;
-    enemies_event.player_hit |= bat_event.player_hit;}
-    break;
+    enemies_event.player_hit |= bat_event.player_hit;
+  }
+  break;
 
   case GAME_LEVEL_EIGHT:
   {
@@ -172,7 +182,7 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     enemies_event.enemies_dead += bat_event.enemies_dead;
     enemies_event.player_hit |= bat_event.player_hit;
   }
-    break;
+  break;
 
   default:
     break;

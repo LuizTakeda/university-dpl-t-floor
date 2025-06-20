@@ -63,12 +63,14 @@ void game_screen_game(const GameInputs *inputs)
     VDP_drawText(str, 1, 2);
   }
 
-  if (score >= 50)
+  if (score >= score_target)
   {
     _current_level++;
     score = 0;
     score_target += 25;
     char str[10];
+    player_life+=2;
+    sprintf(str, "LIFE %d", player_life);
     sprintf(str, "LEVEL %d", _current_level + 1);
     VDP_drawText(str, 1, 4);
     enemies_clean();
