@@ -9,6 +9,7 @@
 
 #define LIMIT 4
 #define SPAWN_RATE 100
+#define SHOT_COUNTDOWN 100
 
 //**************************************************
 //  Enums
@@ -136,6 +137,12 @@ EnemiesEvents enemy_horizontal_shooter_logic(const GamePlayerInfo *player_info)
     case ENEMY_STATE_SPAWNING:
       SPR_setAnim(enemy->_sprite, 0);
 
+      if (did_player_hit_enemy(enemy, player_info))
+      {
+        return_value.enemies_dead++;
+        enemy->state = ENEMY_STATE_DYING;
+      }
+
       if (enemy->_sprite->frameInd >= 4)
       {
         enemy->state = ENEMY_STATE_SHOOTING;
@@ -145,6 +152,63 @@ EnemiesEvents enemy_horizontal_shooter_logic(const GamePlayerInfo *player_info)
 
     case ENEMY_STATE_SHOOTING:
       SPR_setAnim(enemy->_sprite, 1);
+
+      if (did_player_hit_enemy(enemy, player_info))
+      {
+        return_value.enemies_dead++;
+        enemy->state = ENEMY_STATE_DYING;
+      }
+
+      if (enemy->_sprite->frameInd >= 5)
+      {
+        enemy_ball_projectile_spawn(enemy->hit_box_left_x, enemy->hit_box_top_y + 8, FIX16(0), FIX16(+1.5));
+        enemy->state = ENEMY_STATE_IDLE;
+      }
+
+      break;
+
+    case ENEMY_STATE_IDLE:
+      if (did_player_hit_enemy(enemy, player_info))
+      {
+        return_value.enemies_dead++;
+        enemy->state = ENEMY_STATE_DYING;
+      }
+
+      if (enemy->_sprite->frameInd >= 9)
+      {
+        SPR_setAnim(enemy->_sprite, 2);
+        enemy->data = SHOT_COUNTDOWN;
+      }
+
+      if (enemy->_sprite->animInd != 2)
+      {
+        break;
+      }
+
+      if (enemy->data <= 0)
+      {
+        enemy->state = ENEMY_STATE_SHOOTING;
+      }
+      else
+      {
+        enemy->data--;
+      }
+      break;
+
+    case ENEMY_STATE_DYING:
+      SPR_setAnim(enemy->_sprite, 4);
+
+      if (enemy->_sprite->animInd >= 3)
+      {
+        enemy->state = ENEMY_STATE_CLEAN;
+      }
+
+      break;
+
+    case ENEMY_STATE_CLEAN:
+      SPR_releaseSprite(enemy->_sprite);
+      enemy->dead = true;
+      _alive_quantity--;
       break;
 
     default:
