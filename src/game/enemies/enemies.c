@@ -231,19 +231,19 @@ bool did_enemy_hit_player(const Enemy *enemy, const GamePlayerInfo *player_info)
     return false;
   }
 
-  if (player_info->state == PLAYER_STATE_RUNNING_LEFT && enemy->hit_box_right_x <= player_info->middle_x)
+  if (player_info->state == PLAYER_STATE_RUNNING_LEFT && (enemy->hit_box_left_x <= player_info->middle_x || enemy->hit_box_right_x <= player_info->middle_x || enemy->velocity_x > FIX16(0)))
   {
     return false;
   }
 
-  if (player_info->state == PLAYER_STATE_RUNNING_RIGHT && enemy->hit_box_left_x > player_info->middle_x)
+  if (player_info->state == PLAYER_STATE_RUNNING_RIGHT && (enemy->hit_box_left_x > player_info->middle_x || enemy->hit_box_right_x > player_info->middle_x || enemy->velocity_x < FIX16(0)))
   {
     return false;
   }
 
-  if (enemy->hit_box_top_y >= player_info->top_y && enemy->hit_box_top_y <= player_info->bottom_y || enemy->hit_box_bottom_y >= player_info->top_y && enemy->hit_box_bottom_y <= player_info->bottom_y)
+  if ((enemy->hit_box_top_y >= player_info->top_y && enemy->hit_box_top_y <= player_info->bottom_y) || (enemy->hit_box_bottom_y >= player_info->top_y && enemy->hit_box_bottom_y <= player_info->bottom_y))
   {
-    if (enemy->hit_box_left_x >= player_info->left_x && enemy->hit_box_left_x <= player_info->right_x || enemy->hit_box_right_x >= player_info->left_x && enemy->hit_box_right_x <= player_info->right_x)
+    if ((enemy->hit_box_left_x >= player_info->left_x && enemy->hit_box_left_x <= player_info->right_x) || (enemy->hit_box_right_x >= player_info->left_x && enemy->hit_box_right_x <= player_info->right_x))
     {
       return true;
     }

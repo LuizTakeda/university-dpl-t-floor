@@ -163,16 +163,16 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
     case ENEMY_RUNNING_RIGHT:
       SPR_setAnim(_slime_list[i]._sprite, 2);
 
-      return_value.player_hit |= did_enemy_hit_player(&_slime_list[i], player_info);
-
       _slime_list[i].data = did_player_hit_enemy(&_slime_list[i], player_info);
-
+      
       if (_slime_list[i].data)
       {
         _slime_list[i].last_state = _slime_list[i].state;
         _slime_list[i].state = ENEMY_DYING;
         break;
       }
+
+      return_value.player_hit |= did_enemy_hit_player(&_slime_list[i], player_info);
 
       _slime_list[i].x += _slime_list[i].velocity_x;
 
@@ -186,17 +186,17 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
 
     case ENEMY_RUNNING_LEFT:
       SPR_setAnim(_slime_list[i]._sprite, 3);
-
-      return_value.player_hit |= did_enemy_hit_player(&_slime_list[i], player_info);
-
+      
       _slime_list[i].data = did_player_hit_enemy(&_slime_list[i], player_info);
-
+      
       if (_slime_list[i].data)
       {
         _slime_list[i].last_state = _slime_list[i].state;
         _slime_list[i].state = ENEMY_DYING;
         break;
       }
+
+      return_value.player_hit |= did_enemy_hit_player(&_slime_list[i], player_info);
 
       _slime_list[i].x -= _slime_list[i].velocity_x;
 

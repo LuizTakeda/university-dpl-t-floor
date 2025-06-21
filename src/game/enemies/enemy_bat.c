@@ -13,7 +13,7 @@
 #define BAT_HIT_BOX_OFFSET_LEFT_X 1
 #define BAT_HIT_BOX_OFFSET_RIGHT_X 1
 #define BAT_HIT_BOX_OFFSET_TOP_X 1
-#define BAT_HIT_BOX_OFFSET_BOTTOM_X 0 
+#define BAT_HIT_BOX_OFFSET_BOTTOM_X 0
 
 //**************************************************
 //
@@ -134,18 +134,15 @@ EnemiesEvents enemy_bat_logic(const GamePlayerInfo *player_info)
         break;
       }
 
-      if (did_enemy_hit_player(&_bat_list[i], player_info))
-      {
-        return_value.player_hit |= true;
-      }
+      return_value.player_hit |= did_enemy_hit_player(&_bat_list[i], player_info);
 
       _bat_list[i].x += _bat_list[i].velocity_x;
       _bat_list[i].y += _bat_list[i].velocity_y;
 
-      if (_bat_list[i].y > FIX16(175))
+      if (_bat_list[i].y > FIX16(168))
       {
         _bat_list[i].velocity_y *= -1;
-        _bat_list[i].y = FIX16(174);
+        _bat_list[i].y = FIX16(167);
       }
 
       if (_bat_list[i].y < FIX16(56))
@@ -229,12 +226,11 @@ static bool bat_create()
       continue;
     }
 
-    _bat_list[i].x = FIX16(80 + (random() % (231 - 80)));
-    _bat_list[i].y = FIX16(56 + (random() % (175 - 56)));
+    _bat_list[i].x = FIX16(80 + (random() % (224 - 80)));
+    _bat_list[i].y = FIX16(56 + (random() % (168 - 56)));
     _bat_list[i].velocity_x = FIX16(.7);
     _bat_list[i].velocity_y = FIX16(.2);
-    _bat_list[i]
-        .dead = false;
+    _bat_list[i].dead = false;
     _bat_list[i].state = ENEMY_STATE_SPAWNING;
     _bat_list[i]._sprite = SPR_addSprite(
         &spr_enemy_02,
