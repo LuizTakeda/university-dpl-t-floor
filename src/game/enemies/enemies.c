@@ -102,6 +102,11 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
 
     enemies_event.enemies_dead += vertical_shooter_event.enemies_dead;
     enemies_event.player_hit |= vertical_shooter_event.player_hit;
+
+    EnemiesEvents ball_projectile_event = enemy_ball_projectile_logic(player_info);
+
+    enemies_event.enemies_dead += ball_projectile_event.enemies_dead;
+    enemies_event.player_hit |= ball_projectile_event.player_hit;
   }
   break;
 

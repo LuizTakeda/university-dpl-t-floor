@@ -16,6 +16,8 @@ typedef enum
   ENEMY_STATE_SHOOTING_LEFT,
   ENEMY_STATE_SHOOTING_RIGHT,
   ENEMY_STATE_SHOOTING,
+  ENEMY_STATE_IDLE_LEFT,
+  ENEMY_STATE_IDLE_RIGHT,
   ENEMY_STATE_IDLE,
   ENEMY_STATE_DYING,
 } EnemyState;
@@ -75,7 +77,7 @@ void enemy_ball_projectile_setup();
 
 void enemy_ball_projectile_clean();
 
-bool enemy_ball_projectile_spawn(fix16 x_velocity, fix16 y_velocity);
+bool enemy_ball_projectile_spawn(u16 x, u16 y, fix16 x_velocity, fix16 y_velocity);
 
 EnemiesEvents enemy_ball_projectile_logic(const GamePlayerInfo *player_info);
 

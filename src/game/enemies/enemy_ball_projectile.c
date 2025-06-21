@@ -13,16 +13,15 @@
 // Static Functions
 //**************************************************
 
-static void frame_change(Sprite *sprite);
+static void ball_projectile_frame_change(Sprite *sprite);
 
 //**************************************************
 // Globals
 //**************************************************
 
-Enemy _ball_projectile[BALL_PROJECTILE_LIMIT];
-u16 **_sprite_indexes;
-u16 _alive_quantity;
-u16 _spawn_countdown;
+static Enemy _ball_projectile[BALL_PROJECTILE_LIMIT];
+static u16 **_sprite_indexes;
+static u16 _alive_quantity;
 
 //**************************************************
 // Functions
@@ -38,7 +37,6 @@ void enemy_ball_projectile_setup()
   _tile_index += num_tiles;
 
   _alive_quantity = 0;
-  _spawn_countdown = 0;
 
   for (int i = 0; i < BALL_PROJECTILE_LIMIT; i++)
   {
@@ -70,8 +68,38 @@ void enemy_ball_projectile_clean()
 /**
  *
  */
-bool enemy_ball_projectile_spawn(fix16 x_velocity, fix16 y_velocity)
+bool enemy_ball_projectile_spawn(u16 x, u16 y, fix16 x_velocity, fix16 y_velocity)
 {
+  if (_alive_quantity >= BALL_PROJECTILE_LIMIT)
+  {
+    return false;
+  }
+
+  // Find the dead enemy position
+  int i;
+  for (i = 0; i < BALL_PROJECTILE_LIMIT && !_ball_projectile[i].dead; i++)
+    ;
+
+  _ball_projectile[i].dead = false;
+
+  _ball_projectile[i].x = FIX16(x);
+  _ball_projectile[i].y = FIX16(y);
+
+  _ball_projectile[i].velocity_x = x_velocity;
+  _ball_projectile[i].velocity_y = y_velocity;
+
+  _ball_projectile[i].data = 0;
+
+  _ball_projectile[i]._sprite = SPR_addSprite(
+      &spr_projectile_01,
+      fix16ToInt(_ball_projectile[i].x), fix16ToInt(_ball_projectile[i].y),
+      TILE_ATTR(PAL3, 0, false, false));
+
+  SPR_setAutoTileUpload(_ball_projectile[i]._sprite, FALSE);
+  SPR_setFrameChangeCallback(_ball_projectile[i]._sprite, &ball_projectile_frame_change);
+
+  _alive_quantity++;
+
   return false;
 }
 
@@ -81,6 +109,23 @@ bool enemy_ball_projectile_spawn(fix16 x_velocity, fix16 y_velocity)
 EnemiesEvents enemy_ball_projectile_logic(const GamePlayerInfo *player_info)
 {
   EnemiesEvents return_value;
+
+  for (int i = 0; i < BALL_PROJECTILE_LIMIT; i++)
+  {
+    Enemy *enemy = &_ball_projectile[i];
+
+    if (enemy->dead)
+    {
+      continue;
+    }
+
+    SPR_setAnim(enemy->_sprite, 0);
+
+    enemy->x += enemy->velocity_x;
+    enemy->y += enemy->velocity_y;
+
+    SPR_setPosition(enemy->_sprite, fix16ToInt(enemy->x), fix16ToInt(enemy->y));
+  }
 
   return return_value;
 }
@@ -92,7 +137,7 @@ EnemiesEvents enemy_ball_projectile_logic(const GamePlayerInfo *player_info)
 /**
  *
  */
-static void frame_change(Sprite *sprite)
+static void ball_projectile_frame_change(Sprite *sprite)
 {
   u16 tileIndex = _sprite_indexes[sprite->animInd][sprite->frameInd];
 

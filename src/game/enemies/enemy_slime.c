@@ -17,13 +17,10 @@
 //
 //*********************************************************************
 
-Enemy _slime_list[SLIME_LIMIT];
-
-u8 _floor_quantity[SLIME_FLOORS] = {0};
-
-u16 **_slime_sprite_indexes;
-
-u16 _spawn_counter = 0;
+static Enemy _slime_list[SLIME_LIMIT];
+static u8 _floor_quantity[SLIME_FLOORS] = {0};
+static u16 **_slime_sprite_indexes;
+static u16 _spawn_counter = 0;
 
 //*********************************************************************
 //
@@ -164,7 +161,7 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
       SPR_setAnim(_slime_list[i]._sprite, 2);
 
       _slime_list[i].data = did_player_hit_enemy(&_slime_list[i], player_info);
-      
+
       if (_slime_list[i].data)
       {
         _slime_list[i].last_state = _slime_list[i].state;
@@ -186,9 +183,9 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
 
     case ENEMY_STATE_RUNNING_LEFT:
       SPR_setAnim(_slime_list[i]._sprite, 3);
-      
+
       _slime_list[i].data = did_player_hit_enemy(&_slime_list[i], player_info);
-      
+
       if (_slime_list[i].data)
       {
         _slime_list[i].last_state = _slime_list[i].state;

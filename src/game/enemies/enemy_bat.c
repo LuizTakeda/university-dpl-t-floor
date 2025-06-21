@@ -19,10 +19,10 @@
 //
 //**************************************************
 
-Enemy _bat_list[BAT_LIMIT];
-u16 _bat_alive_quantity = 0;
-u16 **_bat_sprite_indexes;
-u16 _spawn_countdown = 0;
+static Enemy _bat_list[BAT_LIMIT];
+static u16 _bat_alive_quantity = 0;
+static u16 **_bat_sprite_indexes;
+static u16 _spawn_countdown = 0;
 
 //**************************************************
 //

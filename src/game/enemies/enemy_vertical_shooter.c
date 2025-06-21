@@ -9,6 +9,7 @@
 
 #define SHOTTERS_LIMIT 4
 #define SHOTTERS_SPAWN_RATE 100
+#define SHOTTERS_FIRE_COUNTDOWN 100
 
 //**************************************************
 //  Enums
@@ -24,10 +25,10 @@ static void frame_change(Sprite *sprite);
 //  Globals
 //**************************************************
 
-Enemy _shotters[SHOTTERS_LIMIT];
-u16 **_sprite_indexes;
-u16 _alive_quantity;
-u16 _spawn_countdown;
+static Enemy _shotters[SHOTTERS_LIMIT];
+static u16 **_sprite_indexes;
+static u16 _alive_quantity;
+static u16 _spawn_countdown;
 
 //**************************************************
 //  Functions
@@ -110,6 +111,7 @@ bool enemy_vertical_shooter_spawn(GameLevel game_level)
   }
 
   _shotters[i].y = FIX16(64 + (i * 32));
+  _shotters[i].data = 0;
 
   _shotters[i]._sprite = SPR_addSprite(
       &spr_enemy_03,
@@ -147,7 +149,7 @@ EnemiesEvents enemy_vertical_shooter_logic(const GamePlayerInfo *player_info)
       break;
 
     case ENEMY_STATE_SPAWNING_RIGHT:
-      SPR_setAnim(enemy->_sprite, 3);
+      SPR_setAnim(enemy->_sprite, 4);
 
       if (enemy->_sprite->frameInd >= 4)
       {
@@ -156,11 +158,70 @@ EnemiesEvents enemy_vertical_shooter_logic(const GamePlayerInfo *player_info)
       break;
 
     case ENEMY_STATE_SHOOTING_LEFT:
-      SPR_setAnim(enemy->_sprite, 4);
+      SPR_setAnim(enemy->_sprite, 5);
+
+      if (enemy->_sprite->frameInd == 5)
+      {
+        enemy_ball_projectile_spawn(fix16ToInt(enemy->x) + 8, fix16ToInt(enemy->y), FIX16(-1), FIX16(0));
+        enemy->state = ENEMY_STATE_IDLE_RIGHT;
+      }
+
       break;
 
     case ENEMY_STATE_SHOOTING_RIGHT:
       SPR_setAnim(enemy->_sprite, 1);
+
+      if (enemy->_sprite->frameInd == 5)
+      {
+        enemy_ball_projectile_spawn(fix16ToInt(enemy->x) - 8, fix16ToInt(enemy->y), FIX16(1), FIX16(0));
+        enemy->state = ENEMY_STATE_IDLE_LEFT;
+      }
+
+      break;
+
+    case ENEMY_STATE_IDLE_LEFT:
+      if (enemy->_sprite->frameInd >= 9)
+      {
+        enemy->data = SHOTTERS_FIRE_COUNTDOWN;
+        SPR_setAnim(enemy->_sprite, 2);
+      }
+
+      if (enemy->_sprite->animInd != 2)
+      {
+        break;
+      }
+
+      if (enemy->data <= 0)
+      {
+        enemy->state = ENEMY_STATE_SHOOTING_RIGHT;
+      }
+      else
+      {
+        enemy->data--;
+      }
+
+      break;
+
+    case ENEMY_STATE_IDLE_RIGHT:
+      if (enemy->_sprite->frameInd >= 9)
+      {
+        enemy->data = SHOTTERS_FIRE_COUNTDOWN;
+        SPR_setAnim(enemy->_sprite, 6);
+      }
+
+      if (enemy->_sprite->animInd != 6)
+      {
+        break;
+      }
+
+      if (enemy->data <= 0)
+      {
+        enemy->state = ENEMY_STATE_SHOOTING_LEFT;
+      }
+      else
+      {
+        enemy->data--;
+      }
       break;
 
     default:
