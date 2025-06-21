@@ -4,7 +4,7 @@
 
 #include "enemies_internals.h"
 
-#define SLIME_LIMIT 20
+#define SLIME_LIMIT 16
 #define SLIME_FLOORS 4
 #define SLIME_LIMIT_FLOOR (SLIME_LIMIT / SLIME_FLOORS)
 

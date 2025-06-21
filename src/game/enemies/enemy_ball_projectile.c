@@ -80,6 +80,8 @@ bool enemy_ball_projectile_spawn(u16 x, u16 y, fix16 x_velocity, fix16 y_velocit
   for (i = 0; i < BALL_PROJECTILE_LIMIT && !_ball_projectile[i].dead; i++)
     ;
 
+  _ball_projectile[i].state = ENEMY_STATE_MOVING;
+
   _ball_projectile[i].dead = false;
 
   _ball_projectile[i].x = FIX16(x);
@@ -121,10 +123,80 @@ EnemiesEvents enemy_ball_projectile_logic(const GamePlayerInfo *player_info)
       continue;
     }
 
-    SPR_setAnim(enemy->_sprite, 0);
+    switch (enemy->state)
+    {
+    case ENEMY_STATE_MOVING:
+      SPR_setAnim(enemy->_sprite, 0);
 
-    enemy->x += enemy->velocity_x;
-    enemy->y += enemy->velocity_y;
+      if (did_enemy_hit_player(enemy, player_info))
+      {
+        enemy->state = ENEMY_STATE_CLEAN;
+        return_value.player_hit = true;
+      }
+
+      EnemyPlayerHit hit = did_player_hit_enemy(enemy, player_info);
+
+      if (hit == ENEMY_PLAYER_HIT_LEFT)
+      {
+        enemy->state = ENEMY_STATE_DYING_LEFT;
+        break;
+      }
+
+      if (hit == ENEMY_PLAYER_HIT_RIGHT)
+      {
+        enemy->state = ENEMY_STATE_DYING_RIGHT;
+        break;
+      }
+
+      enemy->x += enemy->velocity_x;
+      enemy->y += enemy->velocity_y;
+
+      if (fix16ToInt(enemy->x) <= 80 || fix16ToInt(enemy->x) >= 224)
+      {
+        enemy->state = ENEMY_STATE_CLEAN;
+      }
+
+       if (fix16ToInt(enemy->y) <= 53 || fix16ToInt(enemy->y) >= 168)
+      {
+        enemy->state = ENEMY_STATE_CLEAN;
+      }
+
+      break;
+
+    case ENEMY_STATE_DYING_LEFT:
+      SPR_setAnim(enemy->_sprite, 1);
+
+      if (enemy->_sprite->frameInd >= 2)
+      {
+        enemy->state = ENEMY_STATE_CLEAN;
+      }
+
+      break;
+
+    case ENEMY_STATE_DYING_RIGHT:
+      SPR_setAnim(enemy->_sprite, 2);
+
+      if (enemy->_sprite->frameInd >= 2)
+      {
+        enemy->state = ENEMY_STATE_CLEAN;
+      }
+      break;
+
+    case ENEMY_STATE_CLEAN:
+      SPR_releaseSprite(enemy->_sprite);
+      enemy->dead = true;
+      _alive_quantity--;
+      break;
+
+    default:
+      break;
+    }
+
+    enemy->hit_box_left_x = fix16ToInt(enemy->x) + 1;
+    enemy->hit_box_right_x = fix16ToInt(enemy->x) + enemy->_sprite->definition->w - 2;
+
+    enemy->hit_box_top_y = fix16ToInt(enemy->y) + 1;
+    enemy->hit_box_bottom_y = fix16ToInt(enemy->y) + enemy->_sprite->definition->h - 2;
 
     SPR_setPosition(enemy->_sprite, fix16ToInt(enemy->x), fix16ToInt(enemy->y));
   }

@@ -22,6 +22,7 @@ typedef enum
   ENEMY_STATE_DYING,
   ENEMY_STATE_DYING_LEFT,
   ENEMY_STATE_DYING_RIGHT,
+  ENEMY_STATE_CLEAN,
 } EnemyState;
 
 typedef enum
