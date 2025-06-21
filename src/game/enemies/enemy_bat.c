@@ -117,20 +117,20 @@ EnemiesEvents enemy_bat_logic(const GamePlayerInfo *player_info)
 
       if (_bat_list[i]._sprite->frameInd == 4)
       {
-        _bat_list[i].state = ENEMY_MOVING;
+        _bat_list[i].state = ENEMY_STATE_MOVING;
         break;
       }
 
       break;
 
-    case ENEMY_MOVING:
+    case ENEMY_STATE_MOVING:
       SPR_setAnim(_bat_list[i]._sprite, 1);
 
       _bat_list[i]._sprite->data = did_player_hit_enemy(&_bat_list[i], player_info);
 
       if (_bat_list[i]._sprite->data)
       {
-        _bat_list[i].state = ENEMY_DYING;
+        _bat_list[i].state = ENEMY_STATE_DYING;
         break;
       }
 
@@ -165,7 +165,7 @@ EnemiesEvents enemy_bat_logic(const GamePlayerInfo *player_info)
 
       break;
 
-    case ENEMY_DYING:
+    case ENEMY_STATE_DYING:
       SPR_setAnim(_bat_list[i]._sprite, _bat_list[i]._sprite->data == ENEMY_PLAYER_HIT_LEFT ? 2 : 3);
 
       if (_bat_list[i]._sprite->frameInd > 0)

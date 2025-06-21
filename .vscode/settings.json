@@ -24,7 +24,8 @@
         "globals.h": "c",
         "inputs.h": "c",
         "game.h": "c",
-        "array": "c"
+        "array": "c",
+        "enemies_internals.h": "c"
     },
     "gens.path": "C:\\Users\\umota\\Documents\\1-Faculdade\\0-Materias\\Legados\\Gens_KMod\\gens"
 }

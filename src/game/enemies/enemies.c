@@ -19,6 +19,10 @@ void enemies_setup(GameLevel level)
   enemy_slime_setup();
 
   enemy_bat_setup();
+
+  enemy_ball_projectile_setup();
+
+  enemy_vertical_shooter_setup();
 }
 
 void enemies_next_level(GameLevel level)
@@ -82,6 +86,8 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
 
     enemy_bat_spawn(_game_level);
 
+    enemy_vertical_shooter_spawn(_game_level);
+
     EnemiesEvents slime_event = enemy_slime_logic(player_info);
 
     enemies_event.enemies_dead += slime_event.enemies_dead;
@@ -91,6 +97,11 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
 
     enemies_event.enemies_dead += bat_event.enemies_dead;
     enemies_event.player_hit |= bat_event.player_hit;
+
+    EnemiesEvents vertical_shooter_event = enemy_vertical_shooter_logic(player_info);
+
+    enemies_event.enemies_dead += vertical_shooter_event.enemies_dead;
+    enemies_event.player_hit |= vertical_shooter_event.player_hit;
   }
   break;
 
