@@ -79,7 +79,7 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
   {
     enemy_horizontal_shooter_spawn(_game_level);
 
-    EnemiesEvents horizontal_shooter_event = enemy_horizontal_shooter_logic(_game_level);
+    EnemiesEvents horizontal_shooter_event = enemy_horizontal_shooter_logic(player_info);
 
     horizontal_shooter_event.enemies_dead += horizontal_shooter_event.enemies_dead;
     horizontal_shooter_event.player_hit |= horizontal_shooter_event.player_hit;

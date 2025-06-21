@@ -30,9 +30,24 @@ static u16 _spawn_countdown;
 //  Functions
 //**************************************************
 
-void enemy_horizontal_shooter_setup() {}
+void enemy_horizontal_shooter_setup()
+{
+  u16 num_tiles;
+  _sprite_indexes = SPR_loadAllFrames(&spr_enemy_04, _tile_index, &num_tiles);
+  _tile_index += num_tiles;
 
-void enemy_horizontal_shooter_clean() {}
+  _alive_quantity = 0;
+  _spawn_countdown = 0;
+
+  for (int i = 0; i < SHOTTERS_LIMIT; i++)
+  {
+    _shotters[i].dead = true;
+  }
+}
+
+void enemy_horizontal_shooter_clean() {
+  
+}
 
 bool enemy_horizontal_shooter_spawn(GameLevel game_level)
 {
