@@ -114,7 +114,7 @@ static void state_setup(const GameInputs *inputs)
   // Initial values
   set_player_life(START_PLAYER_LIFE);
   set_score(0, START_TARGET_SCORE);
-  set_level(GAME_LEVEL_THREE);
+  set_level(GAME_LEVEL_ONE);
 
   // Setup
   player_setup();
@@ -212,7 +212,7 @@ static void set_score(u16 current, u16 target)
   _target_score = target;
 
   char str[10];
-  sprintf(str, "KILLS %d/%d", _score, _target_score);
+  sprintf(str, "KILLS %3d/%3d", _score, _target_score);
   VDP_drawText(str, 1, 2);
 }
 

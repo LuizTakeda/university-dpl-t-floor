@@ -38,6 +38,10 @@ void enemies_clean()
   enemy_slime_clean();
 
   enemy_bat_clean();
+
+  enemy_ball_projectile_clean();
+
+  enemy_vertical_shooter_clean();
 }
 
 /**
@@ -51,52 +55,29 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
 
   switch (_game_level)
   {
-  case GAME_LEVEL_ONE:
+  case GAME_LEVEL_FOUR:
   {
-    enemy_slime_spawn(_game_level);
-
-    EnemiesEvents slime_event = enemy_slime_logic(player_info);
-
-    enemies_event.enemies_dead += slime_event.enemies_dead;
-    enemies_event.player_hit |= slime_event.player_hit;
   }
-  break;
 
-  case GAME_LEVEL_TWO:
+  case GAME_LEVEL_FIVE:
   {
-    enemy_slime_spawn(_game_level);
-
-    enemy_bat_spawn(_game_level);
-
-    EnemiesEvents slime_event = enemy_slime_logic(player_info);
-
-    enemies_event.enemies_dead += slime_event.enemies_dead;
-    enemies_event.player_hit |= slime_event.player_hit;
-
-    EnemiesEvents bat_event = enemy_bat_logic(player_info);
-
-    enemies_event.enemies_dead += bat_event.enemies_dead;
-    enemies_event.player_hit |= bat_event.player_hit;
   }
-  break;
+
+  case GAME_LEVEL_SIX:
+  {
+  }
+
+  case GAME_LEVEL_SEVEN:
+  {
+  }
+
+  case GAME_LEVEL_EIGHT:
+  {
+  }
 
   case GAME_LEVEL_THREE:
   {
-    enemy_slime_spawn(_game_level);
-
-    enemy_bat_spawn(_game_level);
-
     enemy_vertical_shooter_spawn(_game_level);
-
-    EnemiesEvents slime_event = enemy_slime_logic(player_info);
-
-    enemies_event.enemies_dead += slime_event.enemies_dead;
-    enemies_event.player_hit |= slime_event.player_hit;
-
-    EnemiesEvents bat_event = enemy_bat_logic(player_info);
-
-    enemies_event.enemies_dead += bat_event.enemies_dead;
-    enemies_event.player_hit |= bat_event.player_hit;
 
     EnemiesEvents vertical_shooter_event = enemy_vertical_shooter_logic(player_info);
 
@@ -105,98 +86,27 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
 
     EnemiesEvents ball_projectile_event = enemy_ball_projectile_logic(player_info);
 
-    enemies_event.enemies_dead += ball_projectile_event.enemies_dead;
     enemies_event.player_hit |= ball_projectile_event.player_hit;
   }
-  break;
 
-  case GAME_LEVEL_FOUR:
+  case GAME_LEVEL_TWO:
   {
-    enemy_slime_spawn(_game_level);
-
     enemy_bat_spawn(_game_level);
-
-    EnemiesEvents slime_event = enemy_slime_logic(player_info);
-
-    enemies_event.enemies_dead += slime_event.enemies_dead;
-    enemies_event.player_hit |= slime_event.player_hit;
 
     EnemiesEvents bat_event = enemy_bat_logic(player_info);
 
     enemies_event.enemies_dead += bat_event.enemies_dead;
     enemies_event.player_hit |= bat_event.player_hit;
   }
-  break;
 
-  case GAME_LEVEL_FIVE:
+  case GAME_LEVEL_ONE:
   {
     enemy_slime_spawn(_game_level);
-
-    enemy_bat_spawn(_game_level);
 
     EnemiesEvents slime_event = enemy_slime_logic(player_info);
 
     enemies_event.enemies_dead += slime_event.enemies_dead;
     enemies_event.player_hit |= slime_event.player_hit;
-
-    EnemiesEvents bat_event = enemy_bat_logic(player_info);
-
-    enemies_event.enemies_dead += bat_event.enemies_dead;
-    enemies_event.player_hit |= bat_event.player_hit;
-  }
-  break;
-
-  case GAME_LEVEL_SIX:
-  {
-    enemy_slime_spawn(_game_level);
-
-    enemy_bat_spawn(_game_level);
-
-    EnemiesEvents slime_event = enemy_slime_logic(player_info);
-
-    enemies_event.enemies_dead += slime_event.enemies_dead;
-    enemies_event.player_hit |= slime_event.player_hit;
-
-    EnemiesEvents bat_event = enemy_bat_logic(player_info);
-
-    enemies_event.enemies_dead += bat_event.enemies_dead;
-    enemies_event.player_hit |= bat_event.player_hit;
-  }
-  break;
-
-  case GAME_LEVEL_SEVEN:
-  {
-    enemy_slime_spawn(_game_level);
-
-    enemy_bat_spawn(_game_level);
-
-    EnemiesEvents slime_event = enemy_slime_logic(player_info);
-
-    enemies_event.enemies_dead += slime_event.enemies_dead;
-    enemies_event.player_hit |= slime_event.player_hit;
-
-    EnemiesEvents bat_event = enemy_bat_logic(player_info);
-
-    enemies_event.enemies_dead += bat_event.enemies_dead;
-    enemies_event.player_hit |= bat_event.player_hit;
-  }
-  break;
-
-  case GAME_LEVEL_EIGHT:
-  {
-    enemy_slime_spawn(_game_level);
-
-    enemy_bat_spawn(_game_level);
-
-    EnemiesEvents slime_event = enemy_slime_logic(player_info);
-
-    enemies_event.enemies_dead += slime_event.enemies_dead;
-    enemies_event.player_hit |= slime_event.player_hit;
-
-    EnemiesEvents bat_event = enemy_bat_logic(player_info);
-
-    enemies_event.enemies_dead += bat_event.enemies_dead;
-    enemies_event.player_hit |= bat_event.player_hit;
   }
   break;
 
