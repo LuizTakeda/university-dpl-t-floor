@@ -196,9 +196,9 @@ EnemiesEvents enemy_horizontal_shooter_logic(const GamePlayerInfo *player_info)
       break;
 
     case ENEMY_STATE_DYING:
-      SPR_setAnim(enemy->_sprite, 4);
+      SPR_setAnim(enemy->_sprite, 3);
 
-      if (enemy->_sprite->animInd >= 3)
+      if (enemy->_sprite->frameInd >= 3)
       {
         enemy->state = ENEMY_STATE_CLEAN;
       }

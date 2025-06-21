@@ -134,9 +134,10 @@ EnemyPlayerHit did_player_hit_enemy(const Enemy *enemy, const GamePlayerInfo *pl
 {
   if (player_info->state == PLAYER_STATE_RUNNING_LEFT)
   {
-    if (fix16ToInt(enemy->y) >= player_info->top_y && fix16ToInt(enemy->y) <= player_info->bottom_y)
+    if (player_info->left_x >= enemy->hit_box_left_x && player_info->left_x <= enemy->hit_box_right_x)
     {
-      if (player_info->left_x >= fix16ToInt(enemy->x) && player_info->left_x <= fix16ToInt(enemy->x) + 7)
+      if ((enemy->hit_box_top_y >= player_info->top_y && enemy->hit_box_top_y <= player_info->bottom_y) ||
+          (enemy->hit_box_bottom_y >= player_info->top_y && enemy->hit_box_bottom_y <= player_info->bottom_y))
       {
         return ENEMY_PLAYER_HIT_RIGHT;
       }
@@ -145,9 +146,10 @@ EnemyPlayerHit did_player_hit_enemy(const Enemy *enemy, const GamePlayerInfo *pl
 
   if (player_info->state == PLAYER_STATE_RUNNING_RIGHT)
   {
-    if (fix16ToInt(enemy->y) >= player_info->top_y && fix16ToInt(enemy->y) <= player_info->bottom_y)
+    if (player_info->right_x >= enemy->hit_box_left_x && player_info->right_x <= enemy->hit_box_right_x)
     {
-      if (player_info->right_x >= fix16ToInt(enemy->x) && player_info->right_x <= fix16ToInt(enemy->x) + 7)
+      if ((enemy->hit_box_top_y >= player_info->top_y && enemy->hit_box_top_y <= player_info->bottom_y) ||
+          (enemy->hit_box_bottom_y >= player_info->top_y && enemy->hit_box_bottom_y <= player_info->bottom_y))
       {
         return ENEMY_PLAYER_HIT_LEFT;
       }
