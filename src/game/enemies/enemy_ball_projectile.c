@@ -109,6 +109,8 @@ bool enemy_ball_projectile_spawn(u16 x, u16 y, fix16 x_velocity, fix16 y_velocit
 EnemiesEvents enemy_ball_projectile_logic(const GamePlayerInfo *player_info)
 {
   EnemiesEvents return_value;
+  return_value.enemies_dead = 0;
+  return_value.player_hit = false;
 
   for (int i = 0; i < BALL_PROJECTILE_LIMIT; i++)
   {

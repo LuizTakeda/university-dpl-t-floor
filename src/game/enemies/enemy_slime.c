@@ -10,8 +10,8 @@
 
 #define SLIME_HIT_BOX_OFFSET_LEFT_X 1
 #define SLIME_HIT_BOX_OFFSET_RIGHT_X 1
-#define SLIME_HIT_BOX_OFFSET_TOP_T 1
-#define SLIME_HIT_BOX_OFFSET_BOTTOM_X 0
+#define SLIME_HIT_BOX_OFFSET_TOP_Y 1
+#define SLIME_HIT_BOX_OFFSET_BOTTOM_Y 0
 
 //*********************************************************************
 //
@@ -251,8 +251,8 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
     _slime_list[i].hit_box_left_x = fix16ToInt(_slime_list[i].x) + SLIME_HIT_BOX_OFFSET_LEFT_X;
     _slime_list[i].hit_box_right_x = fix16ToInt(_slime_list[i].x) + _slime_list[i]._sprite->definition->w - 1 - SLIME_HIT_BOX_OFFSET_RIGHT_X;
 
-    _slime_list[i].hit_box_top_y = fix16ToInt(_slime_list[i].y) + SLIME_HIT_BOX_OFFSET_TOP_T;
-    _slime_list[i].hit_box_bottom_y = fix16ToInt(_slime_list[i].y) + _slime_list[i]._sprite->definition->h - 1 - SLIME_HIT_BOX_OFFSET_BOTTOM_X;
+    _slime_list[i].hit_box_top_y = fix16ToInt(_slime_list[i].y) + SLIME_HIT_BOX_OFFSET_TOP_Y;
+    _slime_list[i].hit_box_bottom_y = fix16ToInt(_slime_list[i].y) + _slime_list[i]._sprite->definition->h - 1 - SLIME_HIT_BOX_OFFSET_BOTTOM_Y;
 
     SPR_setPosition(_slime_list[i]._sprite, fix16ToInt(_slime_list[i].x), fix16ToInt(_slime_list[i].y));
   }

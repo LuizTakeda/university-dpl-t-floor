@@ -265,5 +265,13 @@ bool did_enemy_hit_player(const Enemy *enemy, const GamePlayerInfo *player_info)
     }
   }
 
+  if ((player_info->top_y >= enemy->hit_box_top_y && player_info->top_y <= enemy->hit_box_bottom_y) || (player_info->bottom_y >= enemy->hit_box_top_y && player_info->bottom_y <= enemy->hit_box_bottom_y))
+  {
+    if ((player_info->left_x >= enemy->hit_box_left_x && player_info->left_x <= enemy->hit_box_right_x) || (player_info->right_x >= enemy->hit_box_left_x && player_info->right_x <= enemy->hit_box_right_x))
+    {
+      return true;
+    }
+  }
+
   return false;
 }
