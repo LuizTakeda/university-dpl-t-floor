@@ -23,6 +23,8 @@ void enemies_setup(GameLevel level)
   enemy_ball_projectile_setup();
 
   enemy_vertical_shooter_setup();
+
+  enemy_horizontal_shooter_setup();
 }
 
 void enemies_next_level(GameLevel level)
@@ -42,6 +44,8 @@ void enemies_clean()
   enemy_ball_projectile_clean();
 
   enemy_vertical_shooter_clean();
+
+  enemy_horizontal_shooter_clean();
 }
 
 /**
@@ -73,6 +77,12 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
 
   case GAME_LEVEL_EIGHT:
   {
+    enemy_horizontal_shooter_spawn(_game_level);
+
+    EnemiesEvents horizontal_shooter_event = enemy_horizontal_shooter_logic(_game_level);
+
+    horizontal_shooter_event.enemies_dead += horizontal_shooter_event.enemies_dead;
+    horizontal_shooter_event.player_hit |= horizontal_shooter_event.player_hit;
   }
 
   case GAME_LEVEL_THREE:
