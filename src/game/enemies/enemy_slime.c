@@ -4,26 +4,23 @@
 
 #include "enemies_internals.h"
 
-#define SLIME_LIMIT 20
+#define SLIME_LIMIT 16
 #define SLIME_FLOORS 4
 #define SLIME_LIMIT_FLOOR (SLIME_LIMIT / SLIME_FLOORS)
 
 #define SLIME_HIT_BOX_OFFSET_LEFT_X 1
 #define SLIME_HIT_BOX_OFFSET_RIGHT_X 1
-#define SLIME_HIT_BOX_OFFSET_TOP_T 1
-#define SLIME_HIT_BOX_OFFSET_BOTTOM_X 0
+#define SLIME_HIT_BOX_OFFSET_TOP_Y 1
+#define SLIME_HIT_BOX_OFFSET_BOTTOM_Y 0
 
 //*********************************************************************
 //
 //*********************************************************************
 
-Enemy _slime_list[SLIME_LIMIT];
-
-u8 _floor_quantity[SLIME_FLOORS] = {0};
-
-u16 **_slime_sprite_indexes;
-
-u16 _spawn_counter = 0;
+static Enemy _slime_list[SLIME_LIMIT];
+static u8 _floor_quantity[SLIME_FLOORS] = {0};
+static u16 **_slime_sprite_indexes;
+static u16 _spawn_counter = 0;
 
 //*********************************************************************
 //
@@ -143,7 +140,7 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
       if (_slime_list[i].data)
       {
         _slime_list[i].last_state = _slime_list[i].state;
-        _slime_list[i].state = ENEMY_DYING;
+        _slime_list[i].state = ENEMY_STATE_DYING;
         break;
       }
 
@@ -151,24 +148,24 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
       {
         if (random() % 2)
         {
-          _slime_list[i].state = ENEMY_RUNNING_RIGHT;
+          _slime_list[i].state = ENEMY_STATE_RUNNING_RIGHT;
           break;
         }
 
-        _slime_list[i].state = ENEMY_RUNNING_LEFT;
+        _slime_list[i].state = ENEMY_STATE_RUNNING_LEFT;
         break;
       }
       break;
 
-    case ENEMY_RUNNING_RIGHT:
+    case ENEMY_STATE_RUNNING_RIGHT:
       SPR_setAnim(_slime_list[i]._sprite, 2);
 
       _slime_list[i].data = did_player_hit_enemy(&_slime_list[i], player_info);
-      
+
       if (_slime_list[i].data)
       {
         _slime_list[i].last_state = _slime_list[i].state;
-        _slime_list[i].state = ENEMY_DYING;
+        _slime_list[i].state = ENEMY_STATE_DYING;
         break;
       }
 
@@ -179,20 +176,20 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
       if (_slime_list[i].x > FIX16(224))
       {
         _slime_list[i].x = FIX16(224);
-        _slime_list[i].state = ENEMY_RUNNING_LEFT;
+        _slime_list[i].state = ENEMY_STATE_RUNNING_LEFT;
         break;
       }
       break;
 
-    case ENEMY_RUNNING_LEFT:
+    case ENEMY_STATE_RUNNING_LEFT:
       SPR_setAnim(_slime_list[i]._sprite, 3);
-      
+
       _slime_list[i].data = did_player_hit_enemy(&_slime_list[i], player_info);
-      
+
       if (_slime_list[i].data)
       {
         _slime_list[i].last_state = _slime_list[i].state;
-        _slime_list[i].state = ENEMY_DYING;
+        _slime_list[i].state = ENEMY_STATE_DYING;
         break;
       }
 
@@ -203,19 +200,19 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
       if (_slime_list[i].x < FIX16(80))
       {
         _slime_list[i].x = FIX16(80);
-        _slime_list[i].state = ENEMY_RUNNING_RIGHT;
+        _slime_list[i].state = ENEMY_STATE_RUNNING_RIGHT;
         break;
       }
       break;
 
-    case ENEMY_SHOOTING:
+    case ENEMY_STATE_SHOOTING:
       break;
 
-    case ENEMY_IDLE:
+    case ENEMY_STATE_IDLE:
       break;
 
-    case ENEMY_DYING:
-      SPR_setAnim(_slime_list[i]._sprite, _slime_list[i].last_state == ENEMY_RUNNING_RIGHT ? 5 : 4);
+    case ENEMY_STATE_DYING:
+      SPR_setAnim(_slime_list[i]._sprite, _slime_list[i].last_state == ENEMY_STATE_RUNNING_RIGHT ? 5 : 4);
 
       if (_slime_list[i]._sprite->frameInd > 0)
       {
@@ -254,8 +251,8 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
     _slime_list[i].hit_box_left_x = fix16ToInt(_slime_list[i].x) + SLIME_HIT_BOX_OFFSET_LEFT_X;
     _slime_list[i].hit_box_right_x = fix16ToInt(_slime_list[i].x) + _slime_list[i]._sprite->definition->w - 1 - SLIME_HIT_BOX_OFFSET_RIGHT_X;
 
-    _slime_list[i].hit_box_top_y = fix16ToInt(_slime_list[i].y) + SLIME_HIT_BOX_OFFSET_TOP_T;
-    _slime_list[i].hit_box_bottom_y = fix16ToInt(_slime_list[i].y) + _slime_list[i]._sprite->definition->h - 1 - SLIME_HIT_BOX_OFFSET_BOTTOM_X;
+    _slime_list[i].hit_box_top_y = fix16ToInt(_slime_list[i].y) + SLIME_HIT_BOX_OFFSET_TOP_Y;
+    _slime_list[i].hit_box_bottom_y = fix16ToInt(_slime_list[i].y) + _slime_list[i]._sprite->definition->h - 1 - SLIME_HIT_BOX_OFFSET_BOTTOM_Y;
 
     SPR_setPosition(_slime_list[i]._sprite, fix16ToInt(_slime_list[i].x), fix16ToInt(_slime_list[i].y));
   }

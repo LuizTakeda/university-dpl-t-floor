@@ -8,12 +8,21 @@
 typedef enum
 {
   ENEMY_STATE_SPAWNING = 0,
-  ENEMY_RUNNING_RIGHT,
-  ENEMY_RUNNING_LEFT,
-  ENEMY_MOVING,
-  ENEMY_SHOOTING,
-  ENEMY_IDLE,
-  ENEMY_DYING,
+  ENEMY_STATE_SPAWNING_LEFT,
+  ENEMY_STATE_SPAWNING_RIGHT,
+  ENEMY_STATE_RUNNING_RIGHT,
+  ENEMY_STATE_RUNNING_LEFT,
+  ENEMY_STATE_MOVING,
+  ENEMY_STATE_SHOOTING_LEFT,
+  ENEMY_STATE_SHOOTING_RIGHT,
+  ENEMY_STATE_SHOOTING,
+  ENEMY_STATE_IDLE_LEFT,
+  ENEMY_STATE_IDLE_RIGHT,
+  ENEMY_STATE_IDLE,
+  ENEMY_STATE_DYING,
+  ENEMY_STATE_DYING_LEFT,
+  ENEMY_STATE_DYING_RIGHT,
+  ENEMY_STATE_CLEAN,
 } EnemyState;
 
 typedef enum
@@ -39,7 +48,9 @@ EnemyPlayerHit did_player_hit_enemy(const Enemy *enemy, const GamePlayerInfo *pl
 
 bool did_enemy_hit_player(const Enemy *enemy, const GamePlayerInfo *player_info);
 
-// ### START SLIME ###
+//**************************************************
+//  SLIME
+//**************************************************
 
 void enemy_slime_setup();
 
@@ -49,9 +60,9 @@ bool enemy_slime_spawn(GameLevel game_level);
 
 EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info);
 
-// ### END SLIME ###
-
-// ### START BAT ###
+//**************************************************
+//  BAT
+//**************************************************
 
 void enemy_bat_setup();
 
@@ -61,6 +72,28 @@ bool enemy_bat_spawn(GameLevel game_level);
 
 EnemiesEvents enemy_bat_logic(const GamePlayerInfo *player_info);
 
-// ### END BAT ###
+//**************************************************
+//  BALL PROJECTILE
+//**************************************************
+
+void enemy_ball_projectile_setup();
+
+void enemy_ball_projectile_clean();
+
+bool enemy_ball_projectile_spawn(u16 x, u16 y, fix16 x_velocity, fix16 y_velocity);
+
+EnemiesEvents enemy_ball_projectile_logic(const GamePlayerInfo *player_info);
+
+//**************************************************
+//  VERTICAL SHOOTER
+//**************************************************
+
+void enemy_vertical_shooter_setup();
+
+void enemy_vertical_shooter_clean();
+
+bool enemy_vertical_shooter_spawn(GameLevel game_level);
+
+EnemiesEvents enemy_vertical_shooter_logic(const GamePlayerInfo *player_info);
 
 #endif
