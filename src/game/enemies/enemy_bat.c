@@ -239,6 +239,7 @@ static bool bat_create()
 
     SPR_setAutoTileUpload(_bat_list[i]._sprite, FALSE);
     SPR_setFrameChangeCallback(_bat_list[i]._sprite, &bat_frame_change);
+    SPR_setAlwaysOnTop(_bat_list[i]._sprite);
 
     _bat_alive_quantity++;
     return true;

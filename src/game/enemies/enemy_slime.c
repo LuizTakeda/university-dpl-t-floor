@@ -298,6 +298,7 @@ static bool slime_create(u8 floor)
 
     SPR_setAutoTileUpload(_slime_list[i]._sprite, FALSE);
     SPR_setFrameChangeCallback(_slime_list[i]._sprite, &slime_frame_change);
+  SPR_setAlwaysOnTop(_slime_list[i]._sprite);
 
     _floor_quantity[floor]++;
     return true;

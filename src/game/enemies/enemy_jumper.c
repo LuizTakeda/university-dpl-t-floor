@@ -120,6 +120,7 @@ bool enemy_jumper_spawn(GameLevel game_level)
 
   SPR_setAutoTileUpload(_jumpers[i]._sprite, FALSE);
   SPR_setFrameChangeCallback(_jumpers[i]._sprite, &frame_change);
+  SPR_setAlwaysOnTop(_jumpers[i]._sprite);
 
   _alive_quantity++;
 
