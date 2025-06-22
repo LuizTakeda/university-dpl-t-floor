@@ -96,4 +96,16 @@ bool enemy_vertical_shooter_spawn(GameLevel game_level);
 
 EnemiesEvents enemy_vertical_shooter_logic(const GamePlayerInfo *player_info);
 
+//**************************************************
+//  HORIZONTAL SHOOTER
+//**************************************************
+
+void enemy_horizontal_shooter_setup();
+
+void enemy_horizontal_shooter_clean();
+
+bool enemy_horizontal_shooter_spawn(GameLevel game_level);
+
+EnemiesEvents enemy_horizontal_shooter_logic(const GamePlayerInfo *player_info);
+
 #endif
