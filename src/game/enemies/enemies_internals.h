@@ -108,4 +108,16 @@ bool enemy_horizontal_shooter_spawn(GameLevel game_level);
 
 EnemiesEvents enemy_horizontal_shooter_logic(const GamePlayerInfo *player_info);
 
+//**************************************************
+//  JUMPER
+//**************************************************
+
+void enemy_jumper_setup();
+
+void enemy_jumper_clean();
+
+bool enemy_jumper_spawn(GameLevel game_level);
+
+EnemiesEvents enemy_jumper_logic(const GamePlayerInfo *player_info);
+
 #endif
