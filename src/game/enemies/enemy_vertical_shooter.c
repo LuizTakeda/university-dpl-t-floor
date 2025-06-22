@@ -113,8 +113,6 @@ bool enemy_vertical_shooter_spawn(GameLevel game_level)
   _alive_quantity++;
 
   return true;
-
-  return false;
 }
 
 EnemiesEvents enemy_vertical_shooter_logic(const GamePlayerInfo *player_info)

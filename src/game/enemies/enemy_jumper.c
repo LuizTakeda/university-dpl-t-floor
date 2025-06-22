@@ -8,6 +8,8 @@
 //**************************************************
 
 #define LIMIT 4
+#define SPAWN_RATE 100
+#define FLOORS_NUM 4
 
 //**************************************************
 //  Enums
@@ -17,13 +19,13 @@
 //  Static Functions
 //**************************************************
 
-static void jumper_frame_change(Sprite *sprite);
+static void frame_change(Sprite *sprite);
 
 //**************************************************
 //  Globals
 //**************************************************
 
-static Enemy _shotters[LIMIT];
+static Enemy _jumpers[LIMIT];
 static u16 **_sprite_indexes;
 static u16 _alive_quantity;
 static u16 _spawn_countdown;
@@ -46,7 +48,7 @@ void enemy_jumper_setup()
 
   for (int i = 0; i < LIMIT; i++)
   {
-    _shotters[i].dead = true;
+    _jumpers[i].dead = true;
   }
 }
 
@@ -59,13 +61,13 @@ void enemy_jumper_clean()
 
   for (u8 i = 0; i < LIMIT; i++)
   {
-    if (_shotters[i].dead)
+    if (_jumpers[i].dead)
     {
       continue;
     }
 
-    _shotters[i].dead = true;
-    SPR_releaseSprite(_shotters[i]._sprite);
+    _jumpers[i].dead = true;
+    SPR_releaseSprite(_jumpers[i]._sprite);
   }
 
   SPR_defragVRAM();
@@ -76,7 +78,52 @@ void enemy_jumper_clean()
  */
 bool enemy_jumper_spawn(GameLevel game_level)
 {
-  return false;
+  if (_alive_quantity >= LIMIT)
+  {
+    return false;
+  }
+
+  if (_spawn_countdown > 0)
+  {
+    _spawn_countdown--;
+    return false;
+  }
+
+  _spawn_countdown = SPAWN_RATE;
+
+  // Find the dead enemy position
+  int i;
+  for (i = 0; i < LIMIT && !_jumpers[i].dead; i++)
+    ;
+
+  _jumpers[i].dead = false;
+  _jumpers[i].data = 0;
+  _jumpers[i].state = ENEMY_STATE_SPAWNING;
+
+  _jumpers[i].x = FIX16(80 + (16 * (random() % 9)));
+  _jumpers[i].y = FIX16(72 + (32 * (random() % 4)));
+
+  _jumpers[i].velocity_x = FIX16(0.3);
+  _jumpers[i].velocity_y = FIX16(0.7);
+
+  _jumpers[i]
+      ._sprite = SPR_addSprite(
+      &spr_enemy_06,
+      fix16ToInt(_jumpers[i].x), fix16ToInt(_jumpers[i].y),
+      TILE_ATTR(PAL3, 0, false, false));
+
+  _jumpers[i].hit_box_left_x = fix16ToInt(_jumpers[i].x);
+  _jumpers[i].hit_box_right_x = fix16ToInt(_jumpers[i].x) + _jumpers[i]._sprite->definition->w - 1;
+
+  _jumpers[i].hit_box_top_y = fix16ToInt(_jumpers[i].y) + 2;
+  _jumpers[i].hit_box_bottom_y = fix16ToInt(_jumpers[i].y) + _jumpers[i]._sprite->definition->h - 1 - 3;
+
+  SPR_setAutoTileUpload(_jumpers[i]._sprite, FALSE);
+  SPR_setFrameChangeCallback(_jumpers[i]._sprite, &frame_change);
+
+  _alive_quantity++;
+
+  return true;
 }
 
 /**
@@ -88,6 +135,26 @@ EnemiesEvents enemy_jumper_logic(const GamePlayerInfo *player_info)
       .enemies_dead = 0,
       .player_hit = false};
 
+  for (int i = 0; i < LIMIT; i++)
+  {
+    Enemy *enemy = &_jumpers[i];
+
+    if (enemy->dead)
+    {
+      continue;
+    }
+
+    switch (enemy->state)
+    {
+    case ENEMY_STATE_SPAWNING:
+      SPR_setAnim(enemy->_sprite, 0);
+      break;
+
+    default:
+      break;
+    }
+  }
+
   return return_value;
 }
 
@@ -98,7 +165,7 @@ EnemiesEvents enemy_jumper_logic(const GamePlayerInfo *player_info)
 /**
  *
  */
-static void jumper_frame_change(Sprite *sprite)
+static void frame_change(Sprite *sprite)
 {
   u16 tileIndex = _sprite_indexes[sprite->animInd][sprite->frameInd];
 
