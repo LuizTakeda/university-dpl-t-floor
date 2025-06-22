@@ -25,6 +25,8 @@ void enemies_setup(GameLevel level)
   enemy_vertical_shooter_setup();
 
   enemy_horizontal_shooter_setup();
+
+  enemy_jumper_setup();
 }
 
 void enemies_next_level(GameLevel level)
@@ -46,6 +48,8 @@ void enemies_clean()
   enemy_vertical_shooter_clean();
 
   enemy_horizontal_shooter_clean();
+
+  enemy_jumper_clean();
 }
 
 /**
