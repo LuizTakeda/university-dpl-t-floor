@@ -7,9 +7,9 @@
 //  Defines
 //**************************************************
 
-#define LIMIT 4
-#define SPAWN_RATE 100
-#define SHOT_COUNTDOWN 100
+#define SHOTTERS_LIMIT 4
+#define SHOTTERS_SPAWN_RATE 100
+#define SHOTTERS_FIRE_COUNTDOWN 100
 
 //**************************************************
 //  Enums
@@ -25,7 +25,7 @@ static void frame_change(Sprite *sprite);
 //  Globals
 //**************************************************
 
-static Enemy _shotters[LIMIT];
+static Enemy _shotters[SHOTTERS_LIMIT];
 static u16 **_sprite_indexes;
 static u16 _alive_quantity;
 static u16 _spawn_countdown;
@@ -34,26 +34,32 @@ static u16 _spawn_countdown;
 //  Functions
 //**************************************************
 
+/**
+ *
+ */
 void enemy_horizontal_shooter_setup()
 {
   u16 num_tiles;
-  _sprite_indexes = SPR_loadAllFrames(&spr_enemy_04, _tile_index, &num_tiles);
+  _sprite_indexes = SPR_loadAllFrames(&spr_enemy_03, _tile_index, &num_tiles);
   _tile_index += num_tiles;
 
   _alive_quantity = 0;
   _spawn_countdown = 0;
 
-  for (int i = 0; i < LIMIT; i++)
+  for (int i = 0; i < SHOTTERS_LIMIT; i++)
   {
     _shotters[i].dead = true;
   }
 }
 
+/**
+ *
+ */
 void enemy_horizontal_shooter_clean()
 {
   _alive_quantity = 0;
 
-  for (u8 i = 0; i < LIMIT; i++)
+  for (u8 i = 0; i < SHOTTERS_LIMIT; i++)
   {
     if (_shotters[i].dead)
     {
@@ -67,9 +73,12 @@ void enemy_horizontal_shooter_clean()
   SPR_defragVRAM();
 }
 
+/**
+ *
+ */
 bool enemy_horizontal_shooter_spawn(GameLevel game_level)
 {
-  if (_alive_quantity >= LIMIT)
+  if (_alive_quantity >= SHOTTERS_LIMIT)
   {
     return false;
   }
@@ -80,32 +89,49 @@ bool enemy_horizontal_shooter_spawn(GameLevel game_level)
     return false;
   }
 
-  _spawn_countdown = SPAWN_RATE;
+  _spawn_countdown = SHOTTERS_SPAWN_RATE;
 
   // Find the dead enemy position
   int i;
-  for (i = 0; i < LIMIT && !_shotters[i].dead; i++)
+  for (i = 0; i < SHOTTERS_LIMIT && !_shotters[i].dead; i++)
     ;
 
   _shotters[i].dead = false;
 
-  _shotters[i].x = FIX16(96 + (16 * (random() % 7)));
-  _shotters[i].y = FIX16(55);
+  // Left or right wall
+  if ((random() % 2))
+  {
+    _shotters[i].state = ENEMY_STATE_SPAWNING_LEFT;
+    _shotters[i].x = FIX16(80);
+  }
+  else
+  {
+    _shotters[i].state = ENEMY_STATE_SPAWNING_RIGHT;
+    _shotters[i].x = FIX16(216);
+  }
+
+  _shotters[i].y = FIX16(64 + (i * 32));
 
   _shotters[i].data = 0;
-  _shotters[i].state = ENEMY_STATE_SPAWNING;
 
-  _shotters[i]
-      ._sprite = SPR_addSprite(
-      &spr_enemy_04,
+  _shotters[i]._sprite = SPR_addSprite(
+      &spr_enemy_03,
       fix16ToInt(_shotters[i].x), fix16ToInt(_shotters[i].y),
       TILE_ATTR(PAL3, 0, false, false));
 
-  _shotters[i].hit_box_left_x = fix16ToInt(_shotters[i].x);
-  _shotters[i].hit_box_right_x = fix16ToInt(_shotters[i].x) + _shotters[i]._sprite->definition->w - 1;
+  if (_shotters[i].state == ENEMY_STATE_SPAWNING_LEFT)
+  {
+    _shotters[i].hit_box_left_x = fix16ToInt(_shotters[i].x);
+    _shotters[i].hit_box_right_x = fix16ToInt(_shotters[i].x) + _shotters[i]._sprite->definition->w - 1 - 3;
+  }
+  else
+  {
+    _shotters[i].hit_box_left_x = fix16ToInt(_shotters[i].x) + 3;
+    _shotters[i].hit_box_right_x = fix16ToInt(_shotters[i].x) + _shotters[i]._sprite->definition->w - 1;
+  }
 
   _shotters[i].hit_box_top_y = fix16ToInt(_shotters[i].y);
-  _shotters[i].hit_box_bottom_y = fix16ToInt(_shotters[i].y) + _shotters[i]._sprite->definition->h - 1 - 3;
+  _shotters[i].hit_box_bottom_y = fix16ToInt(_shotters[i].y) + _shotters[i]._sprite->definition->h - 1;
 
   SPR_setAutoTileUpload(_shotters[i]._sprite, FALSE);
   SPR_setFrameChangeCallback(_shotters[i]._sprite, &frame_change);
@@ -113,17 +139,18 @@ bool enemy_horizontal_shooter_spawn(GameLevel game_level)
   _alive_quantity++;
 
   return true;
-
-  return false;
 }
 
+/**
+ *
+ */
 EnemiesEvents enemy_horizontal_shooter_logic(const GamePlayerInfo *player_info)
 {
-  EnemiesEvents return_value = {
-      .enemies_dead = 0,
-      .player_hit = false};
+  EnemiesEvents return_value;
+  return_value.enemies_dead = 0;
+  return_value.player_hit = false;
 
-  for (int i = 0; i < LIMIT; i++)
+  for (int i = 0; i < SHOTTERS_LIMIT; i++)
   {
     Enemy *enemy = &_shotters[i];
 
@@ -134,50 +161,87 @@ EnemiesEvents enemy_horizontal_shooter_logic(const GamePlayerInfo *player_info)
 
     switch (enemy->state)
     {
-    case ENEMY_STATE_SPAWNING:
+    case ENEMY_STATE_SPAWNING_LEFT:
       SPR_setAnim(enemy->_sprite, 0);
 
       if (did_player_hit_enemy(enemy, player_info))
       {
-        return_value.enemies_dead++;
-        enemy->state = ENEMY_STATE_DYING;
+        enemy->state = ENEMY_STATE_DYING_LEFT;
+        break;
       }
 
       if (enemy->_sprite->frameInd >= 4)
       {
-        enemy->state = ENEMY_STATE_SHOOTING;
+        enemy->state = ENEMY_STATE_SHOOTING_RIGHT;
+      }
+      break;
+
+    case ENEMY_STATE_SPAWNING_RIGHT:
+      SPR_setAnim(enemy->_sprite, 4);
+
+      if (did_player_hit_enemy(enemy, player_info))
+      {
+        enemy->state = ENEMY_STATE_DYING_RIGHT;
+        break;
+      }
+
+      if (enemy->_sprite->frameInd >= 4)
+      {
+        enemy->state = ENEMY_STATE_SHOOTING_LEFT;
+      }
+      break;
+
+    case ENEMY_STATE_SHOOTING_LEFT:
+      SPR_setAnim(enemy->_sprite, 5);
+
+      if (did_player_hit_enemy(enemy, player_info))
+      {
+        enemy->state = ENEMY_STATE_DYING_RIGHT;
+        break;
+      }
+
+      return_value.player_hit |= did_enemy_hit_player(enemy, player_info);
+
+      if (enemy->_sprite->frameInd == 5)
+      {
+        enemy_ball_projectile_spawn(fix16ToInt(enemy->x), fix16ToInt(enemy->y), FIX16(-1.5), FIX16(0));
+        enemy->state = ENEMY_STATE_IDLE_RIGHT;
       }
 
       break;
 
-    case ENEMY_STATE_SHOOTING:
+    case ENEMY_STATE_SHOOTING_RIGHT:
       SPR_setAnim(enemy->_sprite, 1);
 
       if (did_player_hit_enemy(enemy, player_info))
       {
-        return_value.enemies_dead++;
-        enemy->state = ENEMY_STATE_DYING;
+        enemy->state = ENEMY_STATE_DYING_LEFT;
+        break;
       }
 
-      if (enemy->_sprite->frameInd >= 5)
+      return_value.player_hit |= did_enemy_hit_player(enemy, player_info);
+
+      if (enemy->_sprite->frameInd == 5)
       {
-        enemy_ball_projectile_spawn(enemy->hit_box_left_x, enemy->hit_box_top_y + 8, FIX16(0), FIX16(+1.5));
-        enemy->state = ENEMY_STATE_IDLE;
+        enemy_ball_projectile_spawn(fix16ToInt(enemy->x) + 8, fix16ToInt(enemy->y), FIX16(1.5), FIX16(0));
+        enemy->state = ENEMY_STATE_IDLE_LEFT;
       }
 
       break;
 
-    case ENEMY_STATE_IDLE:
+    case ENEMY_STATE_IDLE_LEFT:
       if (did_player_hit_enemy(enemy, player_info))
       {
-        return_value.enemies_dead++;
-        enemy->state = ENEMY_STATE_DYING;
+        enemy->state = ENEMY_STATE_DYING_LEFT;
+        break;
       }
+
+      return_value.player_hit |= did_enemy_hit_player(enemy, player_info);
 
       if (enemy->_sprite->frameInd >= 9)
       {
+        enemy->data = SHOTTERS_FIRE_COUNTDOWN;
         SPR_setAnim(enemy->_sprite, 2);
-        enemy->data = SHOT_COUNTDOWN;
       }
 
       if (enemy->_sprite->animInd != 2)
@@ -187,7 +251,38 @@ EnemiesEvents enemy_horizontal_shooter_logic(const GamePlayerInfo *player_info)
 
       if (enemy->data <= 0)
       {
-        enemy->state = ENEMY_STATE_SHOOTING;
+        enemy->state = ENEMY_STATE_SHOOTING_RIGHT;
+      }
+      else
+      {
+        enemy->data--;
+      }
+
+      break;
+
+    case ENEMY_STATE_IDLE_RIGHT:
+      if (did_player_hit_enemy(enemy, player_info))
+      {
+        enemy->state = ENEMY_STATE_DYING_RIGHT;
+        break;
+      }
+
+      return_value.player_hit |= did_enemy_hit_player(enemy, player_info);
+
+      if (enemy->_sprite->frameInd >= 9)
+      {
+        enemy->data = SHOTTERS_FIRE_COUNTDOWN;
+        SPR_setAnim(enemy->_sprite, 6);
+      }
+
+      if (enemy->_sprite->animInd != 6)
+      {
+        break;
+      }
+
+      if (enemy->data <= 0)
+      {
+        enemy->state = ENEMY_STATE_SHOOTING_LEFT;
       }
       else
       {
@@ -195,20 +290,29 @@ EnemiesEvents enemy_horizontal_shooter_logic(const GamePlayerInfo *player_info)
       }
       break;
 
-    case ENEMY_STATE_DYING:
+    case ENEMY_STATE_DYING_LEFT:
       SPR_setAnim(enemy->_sprite, 3);
 
       if (enemy->_sprite->frameInd >= 3)
       {
-        enemy->state = ENEMY_STATE_CLEAN;
+        SPR_releaseSprite(enemy->_sprite);
+        enemy->dead = true;
+        _alive_quantity--;
+        return_value.enemies_dead++;
       }
 
       break;
 
-    case ENEMY_STATE_CLEAN:
-      SPR_releaseSprite(enemy->_sprite);
-      enemy->dead = true;
-      _alive_quantity--;
+    case ENEMY_STATE_DYING_RIGHT:
+      SPR_setAnim(enemy->_sprite, 7);
+
+      if (enemy->_sprite->frameInd >= 3)
+      {
+        SPR_releaseSprite(enemy->_sprite);
+        enemy->dead = true;
+        _alive_quantity--;
+        return_value.enemies_dead++;
+      }
       break;
 
     default:
