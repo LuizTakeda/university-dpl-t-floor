@@ -42,6 +42,7 @@ typedef struct
   EnemyState last_state;
   EnemyState state;
   u32 data;
+  u16 data_16;
 } Enemy;
 
 EnemyPlayerHit did_player_hit_enemy(const Enemy *enemy, const GamePlayerInfo *player_info);
