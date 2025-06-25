@@ -9,7 +9,7 @@
 
 #define LIMIT 1
 #define SPAWN_RATE 300
-#define TELEPORT_COUNTDOWN 100
+#define TELEPORT_COUNTDOWN 150
 
 //**************************************************
 //  Enums
@@ -127,6 +127,73 @@ EnemiesEvents enemy_teleporter_logic(const GamePlayerInfo *player_info)
       .enemies_dead = 0,
       .player_hit = false,
   };
+
+  for (int i = 0; i < LIMIT; i++)
+  {
+    Enemy *enemy = &_teleporters[i];
+
+    if (enemy->dead)
+    {
+      continue;
+    }
+
+    switch (enemy->state)
+    {
+    case ENEMY_STATE_SPAWNING:
+      SPR_setAnim(enemy->_sprite, 0);
+
+      if (enemy->_sprite->frameInd >= 3)
+      {
+        enemy->data = TELEPORT_COUNTDOWN;
+        enemy->state = ENEMY_STATE_IDLE;
+      }
+
+      break;
+
+    case ENEMY_STATE_IDLE:
+      SPR_setAnim(enemy->_sprite, 1);
+
+      if (enemy->data <= 0)
+      {
+        enemy->state = ENEMY_STATE_MOVING;
+        break;
+      }
+
+      enemy->data--;
+
+      break;
+
+    case ENEMY_STATE_MOVING:
+      if (enemy->_sprite->animInd != 2 && enemy->_sprite->animInd != 3)
+      {
+        SPR_setAnim(enemy->_sprite, 2);
+      }
+
+      if (enemy->_sprite->animInd == 2 && enemy->_sprite->frameInd >= 2)
+      {
+        SPR_setAnim(enemy->_sprite, 3);
+        enemy->x = intToFix16(player_info->left_x);
+        enemy->y = intToFix16(player_info->top_y);
+      }
+
+      if (enemy->_sprite->animInd == 3 && enemy->_sprite->frameInd >= 3)
+      {
+        enemy->data = TELEPORT_COUNTDOWN;
+        enemy->state = ENEMY_STATE_IDLE;
+      }
+
+    default:
+      break;
+    }
+
+    enemy->hit_box_left_x = fix16ToInt(enemy->x) + 1;
+    enemy->hit_box_right_x = fix16ToInt(enemy->x) + enemy->_sprite->definition->w - 2;
+
+    enemy->hit_box_top_y = fix16ToInt(enemy->y) + 1;
+    enemy->hit_box_bottom_y = fix16ToInt(enemy->y) + enemy->_sprite->definition->h - 2;
+
+    SPR_setPosition(enemy->_sprite, fix16ToInt(enemy->x), fix16ToInt(enemy->y));
+  }
 
   return return_value;
 }
