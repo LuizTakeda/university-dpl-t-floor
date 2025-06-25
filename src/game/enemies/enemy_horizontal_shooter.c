@@ -135,6 +135,8 @@ bool enemy_horizontal_shooter_spawn(GameLevel game_level)
 
   SPR_setAutoTileUpload(_shotters[i]._sprite, FALSE);
   SPR_setFrameChangeCallback(_shotters[i]._sprite, &frame_change);
+  SPR_setAlwaysOnTop(_shotters[i]._sprite);
+
 
   _alive_quantity++;
 

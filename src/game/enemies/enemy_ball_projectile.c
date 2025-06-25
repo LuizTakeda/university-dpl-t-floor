@@ -99,7 +99,8 @@ bool enemy_ball_projectile_spawn(u16 x, u16 y, fix16 x_velocity, fix16 y_velocit
 
   SPR_setAutoTileUpload(_ball_projectile[i]._sprite, FALSE);
   SPR_setFrameChangeCallback(_ball_projectile[i]._sprite, &ball_projectile_frame_change);
-
+  SPR_setAlwaysOnTop(_ball_projectile[i]._sprite);
+  
   _alive_quantity++;
 
   return false;

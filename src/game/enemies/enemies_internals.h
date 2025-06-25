@@ -42,6 +42,7 @@ typedef struct
   EnemyState last_state;
   EnemyState state;
   u32 data;
+  u16 data_16;
 } Enemy;
 
 EnemyPlayerHit did_player_hit_enemy(const Enemy *enemy, const GamePlayerInfo *player_info);
@@ -107,5 +108,17 @@ void enemy_horizontal_shooter_clean();
 bool enemy_horizontal_shooter_spawn(GameLevel game_level);
 
 EnemiesEvents enemy_horizontal_shooter_logic(const GamePlayerInfo *player_info);
+
+//**************************************************
+//  JUMPER
+//**************************************************
+
+void enemy_jumper_setup();
+
+void enemy_jumper_clean();
+
+bool enemy_jumper_spawn(GameLevel game_level);
+
+EnemiesEvents enemy_jumper_logic(const GamePlayerInfo *player_info);
 
 #endif
