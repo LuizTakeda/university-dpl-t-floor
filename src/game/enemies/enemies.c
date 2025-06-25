@@ -77,7 +77,7 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     enemies_event.player_hit |= jumper_event.player_hit;
   }
 
-  case GAME_LEVEL_SEVEN:
+  case GAME_LEVEL_FIVE:
   {
     enemy_vertical_shooter_spawn(_game_level);
 
@@ -87,7 +87,7 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     enemies_event.player_hit |= horizontal_shooter_event.player_hit;
   }
 
-  case GAME_LEVEL_EIGHT:
+  case GAME_LEVEL_FOUR:
   {
     enemy_horizontal_shooter_spawn(_game_level);
 
