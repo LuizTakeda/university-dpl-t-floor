@@ -113,7 +113,7 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
 
   case GAME_LEVEL_TWO:
   {
-    enemy_teleporter_spawn(_game_level);
+    enemy_teleporter_spawn(_game_level, player_info);
 
     EnemiesEvents teleporter_event = enemy_teleporter_logic(player_info);
 

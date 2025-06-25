@@ -129,7 +129,7 @@ void enemy_teleporter_setup();
 
 void enemy_teleporter_clean();
 
-bool enemy_teleporter_spawn(GameLevel game_level);
+bool enemy_teleporter_spawn(GameLevel game_level, const GamePlayerInfo *player_info);
 
 EnemiesEvents enemy_teleporter_logic(const GamePlayerInfo *player_info);
 
