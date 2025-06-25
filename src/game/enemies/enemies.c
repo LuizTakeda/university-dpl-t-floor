@@ -27,6 +27,8 @@ void enemies_setup(GameLevel level)
   enemy_horizontal_shooter_setup();
 
   enemy_jumper_setup();
+
+  enemy_teleporter_setup();
 }
 
 void enemies_next_level(GameLevel level)
@@ -50,6 +52,8 @@ void enemies_clean()
   enemy_horizontal_shooter_clean();
 
   enemy_jumper_clean();
+
+  enemy_teleporter_clean();
 }
 
 /**
@@ -63,19 +67,7 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
 
   switch (_game_level)
   {
-  case GAME_LEVEL_FOUR:
-  {
-  }
-
-  case GAME_LEVEL_FIVE:
-  {
-  }
-
   case GAME_LEVEL_SIX:
-  {
-  }
-
-  case GAME_LEVEL_SEVEN:
   {
     enemy_jumper_spawn(_game_level);
 
@@ -85,7 +77,7 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     enemies_event.player_hit |= jumper_event.player_hit;
   }
 
-  case GAME_LEVEL_EIGHT:
+  case GAME_LEVEL_SEVEN:
   {
     enemy_vertical_shooter_spawn(_game_level);
 
@@ -95,7 +87,7 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     enemies_event.player_hit |= horizontal_shooter_event.player_hit;
   }
 
-  case GAME_LEVEL_THREE:
+  case GAME_LEVEL_EIGHT:
   {
     enemy_horizontal_shooter_spawn(_game_level);
 
@@ -109,7 +101,7 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
     enemies_event.player_hit |= ball_projectile_event.player_hit;
   }
 
-  case GAME_LEVEL_TWO:
+  case GAME_LEVEL_THREE:
   {
     enemy_bat_spawn(_game_level);
 
@@ -117,6 +109,16 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
 
     enemies_event.enemies_dead += bat_event.enemies_dead;
     enemies_event.player_hit |= bat_event.player_hit;
+  }
+
+  case GAME_LEVEL_TWO:
+  {
+    enemy_teleporter_spawn(_game_level);
+
+    EnemiesEvents teleporter_event = enemy_teleporter_logic(player_info);
+
+    enemies_event.enemies_dead += teleporter_event.enemies_dead;
+    enemies_event.player_hit |= teleporter_event.player_hit;
   }
 
   case GAME_LEVEL_ONE:

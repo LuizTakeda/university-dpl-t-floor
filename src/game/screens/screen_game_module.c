@@ -114,7 +114,7 @@ static void state_setup(const GameInputs *inputs)
   // Initial values
   set_player_life(START_PLAYER_LIFE);
   set_score(0, START_TARGET_SCORE);
-  set_level(GAME_LEVEL_ONE);
+  set_level(GAME_LEVEL_TWO);
 
   // Setup
   player_setup();
