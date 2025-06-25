@@ -7,7 +7,7 @@
 //  Defines
 //**************************************************
 
-#define LIMIT 1
+#define LIMIT 2
 #define SPAWN_RATE 300
 #define TELEPORT_COUNTDOWN 150
 
@@ -58,7 +58,8 @@ void enemy_teleporter_setup()
 void enemy_teleporter_clean()
 {
   _alive_quantity = 0;
-
+  _spawn_countdown = 0;
+  
   for (u8 i = 0; i < LIMIT; i++)
   {
     if (_teleporters[i].dead)
@@ -140,18 +141,33 @@ EnemiesEvents enemy_teleporter_logic(const GamePlayerInfo *player_info)
     switch (enemy->state)
     {
     case ENEMY_STATE_SPAWNING:
+    {
       SPR_setAnim(enemy->_sprite, 0);
+
+      EnemyPlayerHit hit = did_player_hit_enemy(enemy, player_info);
+      if (hit == ENEMY_PLAYER_HIT_LEFT)
+      {
+        enemy->state = ENEMY_STATE_DYING_LEFT;
+        break;
+      }
+      else if (hit == ENEMY_PLAYER_HIT_RIGHT)
+      {
+        enemy->state = ENEMY_STATE_DYING_RIGHT;
+        break;
+      }
 
       if (enemy->_sprite->frameInd >= 3)
       {
         enemy->data = TELEPORT_COUNTDOWN;
         enemy->state = ENEMY_STATE_IDLE;
       }
-
-      break;
+    }
+    break;
 
     case ENEMY_STATE_IDLE:
       SPR_setAnim(enemy->_sprite, 1);
+
+      return_value.player_hit |= did_enemy_hit_player(enemy, player_info);
 
       if (enemy->data <= 0)
       {
@@ -164,6 +180,19 @@ EnemiesEvents enemy_teleporter_logic(const GamePlayerInfo *player_info)
       break;
 
     case ENEMY_STATE_MOVING:
+    {
+      EnemyPlayerHit hit = did_player_hit_enemy(enemy, player_info);
+      if (hit == ENEMY_PLAYER_HIT_LEFT)
+      {
+        enemy->state = ENEMY_STATE_DYING_LEFT;
+        break;
+      }
+      else if (hit == ENEMY_PLAYER_HIT_RIGHT)
+      {
+        enemy->state = ENEMY_STATE_DYING_RIGHT;
+        break;
+      }
+
       if (enemy->_sprite->animInd != 2 && enemy->_sprite->animInd != 3)
       {
         SPR_setAnim(enemy->_sprite, 2);
@@ -181,6 +210,74 @@ EnemiesEvents enemy_teleporter_logic(const GamePlayerInfo *player_info)
         enemy->data = TELEPORT_COUNTDOWN;
         enemy->state = ENEMY_STATE_IDLE;
       }
+    }
+    break;
+
+    case ENEMY_STATE_DYING_LEFT:
+    {
+      SPR_setAnim(enemy->_sprite, 4);
+
+      enemy->y += FIX16(0.4);
+      enemy->x += FIX16(0.8);
+
+      u16 x = fix16ToInt(enemy->x);
+
+      if (x < 80)
+      {
+        x = 80;
+        enemy->x = FIX16(80);
+        enemy->velocity_x = FIX16(0.3);
+      }
+      else if (x > 216)
+      {
+        x = 216;
+        enemy->x = FIX16(216);
+        enemy->velocity_x = FIX16(-0.3);
+      }
+
+      if (enemy->_sprite->frameInd >= 2)
+      {
+        return_value.enemies_dead++;
+        enemy->state = ENEMY_STATE_CLEAN;
+      }
+    }
+    break;
+
+    case ENEMY_STATE_DYING_RIGHT:
+    {
+      SPR_setAnim(enemy->_sprite, 4);
+
+      enemy->y += FIX16(0.4);
+      enemy->x += FIX16(-0.8);
+
+      u16 x = fix16ToInt(enemy->x);
+
+      if (x < 80)
+      {
+        x = 80;
+        enemy->x = FIX16(80);
+        enemy->velocity_x = FIX16(0.3);
+      }
+      else if (x > 216)
+      {
+        x = 216;
+        enemy->x = FIX16(216);
+        enemy->velocity_x = FIX16(-0.3);
+      }
+
+      if (enemy->_sprite->frameInd >= 2)
+      {
+        return_value.enemies_dead++;
+        enemy->state = ENEMY_STATE_CLEAN;
+      }
+    }
+    break;
+
+    case ENEMY_STATE_CLEAN:
+      SPR_releaseSprite(enemy->_sprite);
+      enemy->dead = true;
+      _alive_quantity--;
+      break;
 
     default:
       break;
