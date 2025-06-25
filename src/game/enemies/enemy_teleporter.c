@@ -8,8 +8,8 @@
 //**************************************************
 
 #define LIMIT 2
-#define SPAWN_RATE 300
-#define TELEPORT_COUNTDOWN 150
+#define SPAWN_RATE 1100
+#define TELEPORT_COUNTDOWN 200
 
 //**************************************************
 //  Enums
@@ -59,7 +59,7 @@ void enemy_teleporter_clean()
 {
   _alive_quantity = 0;
   _spawn_countdown = 0;
-  
+
   for (u8 i = 0; i < LIMIT; i++)
   {
     if (_teleporters[i].dead)
