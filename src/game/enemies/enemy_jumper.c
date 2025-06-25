@@ -58,6 +58,7 @@ void enemy_jumper_setup()
 void enemy_jumper_clean()
 {
   _alive_quantity = 0;
+  _spawn_countdown = 0;
 
   for (u8 i = 0; i < LIMIT; i++)
   {
@@ -161,7 +162,6 @@ EnemiesEvents enemy_jumper_logic(const GamePlayerInfo *player_info)
       SPR_setAnim(enemy->_sprite, 0);
 
       EnemyPlayerHit hit = did_player_hit_enemy(enemy, player_info);
-
       if (hit == ENEMY_PLAYER_HIT_LEFT)
       {
         enemy->state = ENEMY_STATE_DYING_LEFT;

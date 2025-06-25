@@ -11,7 +11,7 @@
 //**************************************************
 
 #define START_PLAYER_LIFE 3
-#define START_TARGET_SCORE 40
+#define START_TARGET_SCORE 30
 #define PLUS_TARGET_SCORE 10
 
 //**************************************************
