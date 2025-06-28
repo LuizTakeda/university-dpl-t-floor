@@ -2,6 +2,7 @@
 #include <resources.h>
 #include <sprite_eng.h>
 
+#include "game/globals.h"
 #include "enemies.h"
 #include "enemies_internals.h"
 
@@ -151,6 +152,7 @@ EnemyPlayerHit did_player_hit_enemy(const Enemy *enemy, const GamePlayerInfo *pl
       if ((enemy->hit_box_top_y >= player_info->top_y && enemy->hit_box_top_y <= player_info->bottom_y) ||
           (enemy->hit_box_bottom_y >= player_info->top_y && enemy->hit_box_bottom_y <= player_info->bottom_y))
       {
+        XGM_startPlayPCM(EFFECT_HIT_ID, EFFECT_HIT_PRIORITY, EFFECT_HIT_CHANNEL);
         return ENEMY_PLAYER_HIT_RIGHT;
       }
     }
@@ -163,6 +165,7 @@ EnemyPlayerHit did_player_hit_enemy(const Enemy *enemy, const GamePlayerInfo *pl
       if ((enemy->hit_box_top_y >= player_info->top_y && enemy->hit_box_top_y <= player_info->bottom_y) ||
           (enemy->hit_box_bottom_y >= player_info->top_y && enemy->hit_box_bottom_y <= player_info->bottom_y))
       {
+        XGM_startPlayPCM(EFFECT_HIT_ID, EFFECT_HIT_PRIORITY, EFFECT_HIT_CHANNEL);
         return ENEMY_PLAYER_HIT_LEFT;
       }
     }
@@ -195,6 +198,7 @@ bool did_enemy_hit_player(const Enemy *enemy, const GamePlayerInfo *player_info)
   {
     if ((enemy->hit_box_left_x >= player_info->left_x && enemy->hit_box_left_x <= player_info->right_x) || (enemy->hit_box_right_x >= player_info->left_x && enemy->hit_box_right_x <= player_info->right_x))
     {
+      XGM_startPlayPCM(EFFECT_HIT_ID, EFFECT_HIT_PRIORITY, EFFECT_HIT_CHANNEL);
       return true;
     }
   }
@@ -203,6 +207,7 @@ bool did_enemy_hit_player(const Enemy *enemy, const GamePlayerInfo *player_info)
   {
     if ((player_info->left_x >= enemy->hit_box_left_x && player_info->left_x <= enemy->hit_box_right_x) || (player_info->right_x >= enemy->hit_box_left_x && player_info->right_x <= enemy->hit_box_right_x))
     {
+      XGM_startPlayPCM(EFFECT_HIT_ID, EFFECT_HIT_PRIORITY, EFFECT_HIT_CHANNEL);
       return true;
     }
   }

@@ -27,6 +27,7 @@ int main(bool resetType)
 	SYS_showFrameLoad(true);
 
 	XGM_setPCM(EFFECT_OPTION_ID, sfx_option_effect, EFFECT_OPTION_SIZE);
+	XGM_setPCM(EFFECT_HIT_ID, sfx_hit_effect, EFFECT_HIT_SIZE);
 
 	game_setup();
 

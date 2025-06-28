@@ -1,7 +1,8 @@
 #ifndef _RES_RESOURCES_H_
 #define _RES_RESOURCES_H_
 
-extern const u8 sfx_option_effect[1280];
+extern const u8 sfx_option_effect[1024];
+extern const u8 sfx_hit_effect[1536];
 extern const u8 sfx_in_game_music[18176];
 extern const u8 sfx_menu_music[15360];
 extern const Image img_bg;

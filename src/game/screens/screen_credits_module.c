@@ -2,6 +2,7 @@
 #include <resources.h>
 #include <sprite_eng.h>
 
+#include "game/globals.h"
 #include "../game.h"
 #include "../inputs/inputs.h"
 
@@ -18,6 +19,7 @@ void game_screen_credits(const GameInputs *inputs)
 
   if (game_inputs_click(inputs->ok))
   {
+    XGM_startPlayPCM(EFFECT_OPTION_ID, EFFECT_OPTION_PRIORITY, EFFECT_OPTION_CHANNEL);
     game_screen_set(GSN_START);
     return;
   }

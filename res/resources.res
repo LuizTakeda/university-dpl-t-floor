@@ -12,4 +12,5 @@ SPRITE spr_projectile_01 "sprites\projectile-01.png" 1 1 FAST 8
 XGM sfx_in_game_music "sfx\in-game-music.vgm" -1
 XGM sfx_menu_music "sfx\menu-music.vgm" -1
 
-WAV sfx_option_effect "sfx\option-effect.wav" DEFAULT
+WAV sfx_option_effect "sfx\option-effect.wav" XGM
+WAV sfx_hit_effect "sfx\hit-effect.wav" XGM
