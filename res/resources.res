@@ -14,3 +14,7 @@ XGM sfx_menu_music "sfx\menu-music.vgm" -1
 
 WAV sfx_option_effect "sfx\option-effect.wav" XGM
 WAV sfx_hit_effect "sfx\hit-effect.wav" XGM
+WAV sfx_stairs_effect "sfx\stairs-effect.wav" XGM
+WAV sfx_shoot_effect "sfx\shoot-effect.wav" XGM
+WAV sfx_teleport_effect "sfx\teleport-effect.wav" XGM
+WAV sfx_jump_effect "sfx\jump-effect.wav" XGM

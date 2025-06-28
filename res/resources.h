@@ -3,6 +3,10 @@
 
 extern const u8 sfx_option_effect[1024];
 extern const u8 sfx_hit_effect[1536];
+extern const u8 sfx_stairs_effect[2048];
+extern const u8 sfx_shoot_effect[5376];
+extern const u8 sfx_teleport_effect[24064];
+extern const u8 sfx_jump_effect[6144];
 extern const u8 sfx_in_game_music[18176];
 extern const u8 sfx_menu_music[15360];
 extern const Image img_bg;
