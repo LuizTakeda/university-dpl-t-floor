@@ -12,7 +12,9 @@
  *     JAVA := C:/Users/Aluno/Downloads/jdk-24/bin/java
  */
 #include <genesis.h>
+#include <resources.h>
 
+#include "game/globals.h"
 #include "game/game.h"
 
 int main(bool resetType)
@@ -23,6 +25,8 @@ int main(bool resetType)
 	}
 
 	SYS_showFrameLoad(true);
+
+	XGM_setPCM(EFFECT_OPTION_ID, sfx_option_effect, EFFECT_OPTION_SIZE);
 
 	game_setup();
 
