@@ -9,4 +9,5 @@ SPRITE spr_enemy_05 "sprites\enemy-05.png" 1 1 FAST 7
 SPRITE spr_enemy_06 "sprites\enemy-06.png" 2 1 FAST 6
 SPRITE spr_projectile_01 "sprites\projectile-01.png" 1 1 FAST 8
 
-XGM sfx_background "sfx\background-music.vgm" -1
+XGM sfx_in_game "sfx\in-game-music.vgm" -1
+XGM sfx_menu "sfx\menu-music.vgm" -1

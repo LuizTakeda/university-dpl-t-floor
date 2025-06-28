@@ -24,6 +24,9 @@ void game_screen_start(const GameInputs *inputs)
     VDP_drawImageEx(BG_A, &img_menu, TILE_ATTR_FULL(PAL0, 0, 0, 0, 1), 0, 0, true, DMA);
 
     _current_option = SO_START_GAME;
+
+    XGM_setLoopNumber(-1);
+    XGM_startPlay(sfx_menu);
   }
 
   switch (_current_option)

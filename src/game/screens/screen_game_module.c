@@ -64,7 +64,7 @@ void game_screen_game(const GameInputs *inputs)
     _game_state = GAME_STATE_SETUP;
 
     XGM_setLoopNumber(-1);
-    XGM_startPlay(sfx_background);
+    XGM_startPlay(sfx_in_game);
   }
 
   switch (_game_state)

@@ -1,7 +1,8 @@
 #ifndef _RES_RESOURCES_H_
 #define _RES_RESOURCES_H_
 
-extern const u8 sfx_background[18176];
+extern const u8 sfx_in_game[18176];
+extern const u8 sfx_menu[15360];
 extern const Image img_bg;
 extern const Image img_menu;
 extern const SpriteDefinition spr_player;
