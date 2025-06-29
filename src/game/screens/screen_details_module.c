@@ -15,6 +15,7 @@ void game_screen_details(const GameInputs *inputs)
     VDP_clearPlane(BG_A, 1);
     VDP_clearPlane(BG_B, 1);
     VDP_clearPlane(WINDOW, 1);
+    SPR_reset();
 
     VDP_drawImageEx(BG_A, &img_details, TILE_ATTR_FULL(PAL0, 0, 0, 0, 1), 0, 0, true, DMA);
 
@@ -24,11 +25,10 @@ void game_screen_details(const GameInputs *inputs)
 
     VDP_drawText("Do not touch", 11, 15);
 
-
     PAL_setPalette(PAL3, spr_enemy_05.palette->data, DMA);
     _sprite = SPR_addSprite(
         &spr_enemy_05,
-        8*24, 15 * 8,
+        8 * 24, 15 * 8,
         TILE_ATTR(PAL3, 0, false, false));
 
     SPR_setAnim(_sprite, 1);

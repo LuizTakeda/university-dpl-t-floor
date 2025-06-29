@@ -12,6 +12,7 @@ extern const Image img_bg;
 extern const Image img_menu;
 extern const Image img_credits;
 extern const Image img_details;
+extern const Image img_base;
 extern const SpriteDefinition spr_player;
 extern const SpriteDefinition spr_enemy_01;
 extern const SpriteDefinition spr_enemy_02;

@@ -64,9 +64,9 @@ void game_screen_game(const GameInputs *inputs)
     _game_state = GAME_STATE_SETUP;
 
     XGM2_play(sfx_in_game_music);
-    XGM2_setFMVolume(40);
+    XGM2_setFMVolume(50);
   }
-
+  
   switch (_game_state)
   {
   case GAME_STATE_SETUP:
@@ -188,6 +188,7 @@ static void state_dead(const GameInputs *inputs)
 {
   XGM2_pause();
   player_clean();
+  enemies_clean();
   game_screen_set(GSN_GAME_OVER);
 }
 
