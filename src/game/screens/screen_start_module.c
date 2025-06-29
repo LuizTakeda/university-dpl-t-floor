@@ -8,11 +8,12 @@
 
 typedef enum
 {
-  SO_START_GAME = 0,
-  SO_CREDITS,
-} ScreenOptions;
+  OPTION_START_GAME = 0,
+  OPTION_DETAILS,
+  OPTION_CREDITS,
+} Options;
 
-static ScreenOptions _current_option = SO_START_GAME;
+static Options _current_option = OPTION_START_GAME;
 
 void game_screen_start(const GameInputs *inputs)
 {
@@ -24,7 +25,7 @@ void game_screen_start(const GameInputs *inputs)
 
     VDP_drawImageEx(BG_A, &img_menu, TILE_ATTR_FULL(PAL0, 0, 0, 0, 1), 0, 0, true, DMA);
 
-    _current_option = SO_START_GAME;
+    _current_option = OPTION_START_GAME;
   }
 
   if (!XGM2_isPlaying())
@@ -35,14 +36,15 @@ void game_screen_start(const GameInputs *inputs)
 
   switch (_current_option)
   {
-  case SO_START_GAME:
-    VDP_drawTextBG(BG_B, " >Start< ", 15, 14);
+  case OPTION_START_GAME:
+    VDP_drawTextBG(BG_B, " >Start< ", 15, 12);
+    VDP_drawTextBG(BG_B, " Details ", 15, 14);
     VDP_drawTextBG(BG_B, " Credits ", 15, 16);
 
     if (game_inputs_click(inputs->down))
     {
       XGM2_playPCMEx(EFFECT_OPTION);
-      _current_option = SO_CREDITS;
+      _current_option++;
       return;
     }
 
@@ -54,14 +56,41 @@ void game_screen_start(const GameInputs *inputs)
     }
     break;
 
-  case SO_CREDITS:
-    VDP_drawTextBG(BG_B, "  Start  ", 15, 14);
+  case OPTION_DETAILS:
+    VDP_drawTextBG(BG_B, "  Start  ", 15, 12);
+    VDP_drawTextBG(BG_B, ">Details<", 15, 14);
+    VDP_drawTextBG(BG_B, " Credits ", 15, 16);
+
+    if (game_inputs_click(inputs->down))
+    {
+      XGM2_playPCMEx(EFFECT_OPTION);
+      _current_option++;
+      return;
+    }
+
+    if (game_inputs_click(inputs->up))
+    {
+      XGM2_playPCMEx(EFFECT_OPTION);
+      _current_option--;
+      return;
+    }
+
+    if (game_inputs_click(inputs->ok))
+    {
+      XGM2_playPCMEx(EFFECT_OPTION);
+      return;
+    }
+    break;
+
+  case OPTION_CREDITS:
+    VDP_drawTextBG(BG_B, "  Start  ", 15, 12);
+    VDP_drawTextBG(BG_B, " Details ", 15, 14);
     VDP_drawTextBG(BG_B, ">Credits<", 15, 16);
 
     if (game_inputs_click(inputs->up))
     {
       XGM2_playPCMEx(EFFECT_OPTION);
-      _current_option = SO_START_GAME;
+      _current_option--;
       return;
     }
 
