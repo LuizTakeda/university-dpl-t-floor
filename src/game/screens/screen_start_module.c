@@ -27,9 +27,10 @@ void game_screen_start(const GameInputs *inputs)
     _current_option = SO_START_GAME;
   }
 
-  if (!XGM_isPlaying())
+  if (!XGM2_isPlaying())
   {
-    XGM_startPlay(sfx_menu_music);
+    XGM2_play(sfx_menu_music);
+    XGM2_setFMVolume(40);
   }
 
   switch (_current_option)
@@ -40,14 +41,14 @@ void game_screen_start(const GameInputs *inputs)
 
     if (game_inputs_click(inputs->down))
     {
-      XGM_startPlayPCM(EFFECT_OPTION_ID, EFFECT_OPTION_PRIORITY, EFFECT_OPTION_CHANNEL);
+      XGM2_playPCMEx(EFFECT_OPTION);
       _current_option = SO_CREDITS;
       return;
     }
 
     if (game_inputs_click(inputs->ok))
     {
-      XGM_startPlayPCM(EFFECT_OPTION_ID, EFFECT_OPTION_PRIORITY, EFFECT_OPTION_CHANNEL);
+      XGM2_playPCMEx(EFFECT_OPTION);
       game_screen_set(GSN_GAME);
       return;
     }
@@ -59,14 +60,14 @@ void game_screen_start(const GameInputs *inputs)
 
     if (game_inputs_click(inputs->up))
     {
-      XGM_startPlayPCM(EFFECT_OPTION_ID, EFFECT_OPTION_PRIORITY, EFFECT_OPTION_CHANNEL);
+      XGM2_playPCMEx(EFFECT_OPTION);
       _current_option = SO_START_GAME;
       return;
     }
 
     if (game_inputs_click(inputs->ok))
     {
-      XGM_startPlayPCM(EFFECT_OPTION_ID, EFFECT_OPTION_PRIORITY, EFFECT_OPTION_CHANNEL);
+      XGM2_playPCMEx(EFFECT_OPTION);
       game_screen_set(GSN_CREDITS);
       return;
     }

@@ -19,7 +19,7 @@ void game_screen_credits(const GameInputs *inputs)
 
   if (game_inputs_click(inputs->ok))
   {
-    XGM_startPlayPCM(EFFECT_OPTION_ID, EFFECT_OPTION_PRIORITY, EFFECT_OPTION_CHANNEL);
+    XGM2_playPCMEx(EFFECT_OPTION);
     game_screen_set(GSN_START);
     return;
   }

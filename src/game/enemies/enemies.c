@@ -104,7 +104,7 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
 
   case GAME_LEVEL_THREE:
   {
-    enemy_bat_spawn(_game_level);
+    // enemy_bat_spawn(_game_level);
 
     EnemiesEvents bat_event = enemy_bat_logic(player_info);
 
@@ -124,7 +124,7 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
 
   case GAME_LEVEL_ONE:
   {
-    enemy_slime_spawn(_game_level);
+    // enemy_slime_spawn(_game_level);
 
     EnemiesEvents slime_event = enemy_slime_logic(player_info);
 
@@ -152,7 +152,7 @@ EnemyPlayerHit did_player_hit_enemy(const Enemy *enemy, const GamePlayerInfo *pl
       if ((enemy->hit_box_top_y >= player_info->top_y && enemy->hit_box_top_y <= player_info->bottom_y) ||
           (enemy->hit_box_bottom_y >= player_info->top_y && enemy->hit_box_bottom_y <= player_info->bottom_y))
       {
-        XGM_startPlayPCM(EFFECT_HIT_ID, EFFECT_HIT_PRIORITY, EFFECT_HIT_CHANNEL);
+        XGM2_playPCMEx(EFFECT_HIT);
         return ENEMY_PLAYER_HIT_RIGHT;
       }
     }
@@ -165,7 +165,7 @@ EnemyPlayerHit did_player_hit_enemy(const Enemy *enemy, const GamePlayerInfo *pl
       if ((enemy->hit_box_top_y >= player_info->top_y && enemy->hit_box_top_y <= player_info->bottom_y) ||
           (enemy->hit_box_bottom_y >= player_info->top_y && enemy->hit_box_bottom_y <= player_info->bottom_y))
       {
-        XGM_startPlayPCM(EFFECT_HIT_ID, EFFECT_HIT_PRIORITY, EFFECT_HIT_CHANNEL);
+        XGM2_playPCMEx(EFFECT_HIT);
         return ENEMY_PLAYER_HIT_LEFT;
       }
     }
@@ -198,7 +198,7 @@ bool did_enemy_hit_player(const Enemy *enemy, const GamePlayerInfo *player_info)
   {
     if ((enemy->hit_box_left_x >= player_info->left_x && enemy->hit_box_left_x <= player_info->right_x) || (enemy->hit_box_right_x >= player_info->left_x && enemy->hit_box_right_x <= player_info->right_x))
     {
-      XGM_startPlayPCM(EFFECT_HIT_ID, EFFECT_HIT_PRIORITY, EFFECT_HIT_CHANNEL);
+      XGM2_playPCMEx(EFFECT_HIT);
       return true;
     }
   }
@@ -207,7 +207,7 @@ bool did_enemy_hit_player(const Enemy *enemy, const GamePlayerInfo *player_info)
   {
     if ((player_info->left_x >= enemy->hit_box_left_x && player_info->left_x <= enemy->hit_box_right_x) || (player_info->right_x >= enemy->hit_box_left_x && player_info->right_x <= enemy->hit_box_right_x))
     {
-      XGM_startPlayPCM(EFFECT_HIT_ID, EFFECT_HIT_PRIORITY, EFFECT_HIT_CHANNEL);
+      XGM2_playPCMEx(EFFECT_HIT);
       return true;
     }
   }

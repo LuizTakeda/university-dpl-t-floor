@@ -2,42 +2,12 @@
 #define _GLOBALS_H
 
 #include <genesis.h>
+#include <resources.h>
 
-#define EFFECT_OPTION_ID 64
-#define EFFECT_OPTION_SIZE 1024
-#define EFFECT_OPTION_PRIORITY 1
-#define EFFECT_OPTION_CHANNEL SOUND_PCM_CH2
-
-#define EFFECT_HIT_ID 65
-#define EFFECT_HIT_SIZE 1536
-#define EFFECT_HIT_PRIORITY 3
-#define EFFECT_HIT_CHANNEL SOUND_PCM_CH3
-
-#define EFFECT_STAIRS_ID 66
-#define EFFECT_STAIRS_SIZE 2048
-#define EFFECT_STAIRS_PRIORITY 1
-#define EFFECT_STAIRS_CHANNEL SOUND_PCM_CH3
-
-#define EFFECT_SHOOT_ID 67
-#define EFFECT_SHOOT_SIZE 5376
-#define EFFECT_SHOOT_PRIORITY 2
-#define EFFECT_SHOOT_CHANNEL SOUND_PCM_CH4
-
-#define EFFECT_TELEPORT_ID 68
-#define EFFECT_TELEPORT_SIZE 24064
-#define EFFECT_TELEPORT_PRIORITY 4
-#define EFFECT_TELEPORT_CHANNEL SOUND_PCM_CH4
-
-#define EFFECT_JUMP_ID 69
-#define EFFECT_JUMP_SIZE 6144
-#define EFFECT_JUMP_PRIORITY 2
-#define EFFECT_JUMP_CHANNEL SOUND_PCM_CH4
-
-/*
-#define EFFECT__ID
-#define EFFECT__SIZE
-#define EFFECT__PRIORITY
-#define EFFECT__CHANNEL SOUND_PCM_CH4
-*/
+#define EFFECT_OPTION sfx_option_effect, 1024, SOUND_PCM_CH2, 1, false, false
+#define EFFECT_HIT sfx_hit_effect, 1536, SOUND_PCM_CH2, 3, false, false
+#define EFFECT_STAIRS sfx_stairs_effect, 1792, SOUND_PCM_CH2, 2, false, false
+#define EFFECT_SHOOT sfx_shoot_effect, 5120, SOUND_PCM_CH2, 1, false, false
+#define EFFECT_TELEPORT sfx_teleport_effect, 22784, SOUND_PCM_CH2, 5, false, false
 
 #endif

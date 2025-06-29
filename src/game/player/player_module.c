@@ -484,7 +484,7 @@ static void climbing_up_logic(const GameInputs *inputs)
   if (_climbing_effect_counter >= 10)
   {
     _climbing_effect_counter = 0;
-    XGM_startPlayPCM(EFFECT_STAIRS_ID, EFFECT_STAIRS_PRIORITY, EFFECT_STAIRS_CHANNEL);
+    XGM2_playPCMEx(EFFECT_STAIRS);
   }
 
   if (is_first_entry())
@@ -516,7 +516,7 @@ static void climbing_down_logic(const GameInputs *inputs)
   if (_climbing_effect_counter >= 10)
   {
     _climbing_effect_counter = 0;
-    XGM_startPlayPCM(EFFECT_STAIRS_ID, EFFECT_STAIRS_PRIORITY, EFFECT_STAIRS_CHANNEL);
+    XGM2_playPCMEx(EFFECT_STAIRS);
   }
 
   if (is_first_entry())
