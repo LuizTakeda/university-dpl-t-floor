@@ -3,6 +3,8 @@
 #include <genesis.h>
 #include <resources.h>
 
+#include "game/globals.h"
+
 //**************************************************
 // Defines
 //**************************************************
@@ -100,10 +102,12 @@ bool enemy_ball_projectile_spawn(u16 x, u16 y, fix16 x_velocity, fix16 y_velocit
   SPR_setAutoTileUpload(_ball_projectile[i]._sprite, FALSE);
   SPR_setFrameChangeCallback(_ball_projectile[i]._sprite, &ball_projectile_frame_change);
   SPR_setAlwaysOnTop(_ball_projectile[i]._sprite);
-  
+
   _alive_quantity++;
 
-  return false;
+  XGM2_playPCMEx(EFFECT_SHOOT);
+
+  return true;
 }
 
 /**
@@ -157,7 +161,7 @@ EnemiesEvents enemy_ball_projectile_logic(const GamePlayerInfo *player_info)
         enemy->state = ENEMY_STATE_CLEAN;
       }
 
-       if (fix16ToInt(enemy->y) <= 53 || fix16ToInt(enemy->y) >= 168)
+      if (fix16ToInt(enemy->y) <= 53 || fix16ToInt(enemy->y) >= 168)
       {
         enemy->state = ENEMY_STATE_CLEAN;
       }

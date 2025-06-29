@@ -3,11 +3,13 @@
 #include <genesis.h>
 #include <resources.h>
 
+#include "game/globals.h"
+
 //**************************************************
 //  Defines
 //**************************************************
 
-#define LIMIT 2
+#define LIMIT 1
 #define SPAWN_RATE 1100
 #define TELEPORT_COUNTDOWN 200
 
@@ -116,7 +118,9 @@ bool enemy_teleporter_spawn(GameLevel game_level, const GamePlayerInfo *player_i
 
   _alive_quantity++;
 
-  return false;
+  XGM2_playPCMEx(EFFECT_TELEPORT);
+
+  return true;
 }
 
 /**
@@ -172,6 +176,7 @@ EnemiesEvents enemy_teleporter_logic(const GamePlayerInfo *player_info)
       if (enemy->data <= 0)
       {
         enemy->state = ENEMY_STATE_MOVING;
+        XGM2_playPCMEx(EFFECT_TELEPORT);
         break;
       }
 

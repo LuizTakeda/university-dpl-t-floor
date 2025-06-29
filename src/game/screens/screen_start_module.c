@@ -2,6 +2,7 @@
 #include <resources.h>
 #include <sprite_eng.h>
 
+#include "game/globals.h"
 #include "../game.h"
 #include "../inputs/inputs.h"
 
@@ -26,6 +27,12 @@ void game_screen_start(const GameInputs *inputs)
     _current_option = SO_START_GAME;
   }
 
+  if (!XGM2_isPlaying())
+  {
+    XGM2_play(sfx_menu_music);
+    XGM2_setFMVolume(40);
+  }
+
   switch (_current_option)
   {
   case SO_START_GAME:
@@ -34,29 +41,33 @@ void game_screen_start(const GameInputs *inputs)
 
     if (game_inputs_click(inputs->down))
     {
+      XGM2_playPCMEx(EFFECT_OPTION);
       _current_option = SO_CREDITS;
       return;
     }
 
     if (game_inputs_click(inputs->ok))
     {
+      XGM2_playPCMEx(EFFECT_OPTION);
       game_screen_set(GSN_GAME);
       return;
     }
     break;
 
   case SO_CREDITS:
-  VDP_drawTextBG(BG_B, "  Start  ", 15, 14);
-  VDP_drawTextBG(BG_B, ">Credits<", 15, 16);
+    VDP_drawTextBG(BG_B, "  Start  ", 15, 14);
+    VDP_drawTextBG(BG_B, ">Credits<", 15, 16);
 
     if (game_inputs_click(inputs->up))
     {
+      XGM2_playPCMEx(EFFECT_OPTION);
       _current_option = SO_START_GAME;
       return;
     }
 
     if (game_inputs_click(inputs->ok))
     {
+      XGM2_playPCMEx(EFFECT_OPTION);
       game_screen_set(GSN_CREDITS);
       return;
     }

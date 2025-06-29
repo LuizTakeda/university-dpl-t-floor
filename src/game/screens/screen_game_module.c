@@ -62,6 +62,9 @@ void game_screen_game(const GameInputs *inputs)
   if (game_screen_is_first_entry())
   {
     _game_state = GAME_STATE_SETUP;
+
+    XGM2_play(sfx_in_game_music);
+    XGM2_setFMVolume(40);
   }
 
   switch (_game_state)
@@ -114,7 +117,7 @@ static void state_setup(const GameInputs *inputs)
   // Initial values
   set_player_life(START_PLAYER_LIFE);
   set_score(0, START_TARGET_SCORE);
-  set_level(GAME_LEVEL_ONE);
+  set_level(GAME_LEVEL_SIX);
 
   // Setup
   player_setup();
@@ -129,6 +132,8 @@ static void state_setup(const GameInputs *inputs)
  */
 static void state_in_level(const GameInputs *inputs)
 {
+  XGM2_resume();
+
   GamePlayerInfo player_info = player_logic(inputs);
 
   EnemiesEvents enemies_events = enemies_logic(&player_info);
@@ -165,6 +170,7 @@ static void state_in_level(const GameInputs *inputs)
 
 static void state_changing_level(const GameInputs *inputs)
 {
+  XGM2_pause();
   set_level(_current_level + 1);
   set_score(0, _target_score + PLUS_TARGET_SCORE);
   set_player_life(_player_life + 1);
@@ -180,6 +186,7 @@ static void state_changing_level(const GameInputs *inputs)
  */
 static void state_dead(const GameInputs *inputs)
 {
+  XGM2_pause();
   player_clean();
   game_screen_set(GSN_GAME_OVER);
 }

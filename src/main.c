@@ -12,7 +12,9 @@
  *     JAVA := C:/Users/Aluno/Downloads/jdk-24/bin/java
  */
 #include <genesis.h>
+#include <resources.h>
 
+#include "game/globals.h"
 #include "game/game.h"
 
 int main(bool resetType)

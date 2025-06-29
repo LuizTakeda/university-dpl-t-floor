@@ -3,6 +3,7 @@
 #include <sprite_eng.h>
 
 #include "player.h"
+#include "game/globals.h"
 #include "../inputs/inputs.h"
 
 typedef enum
@@ -43,6 +44,7 @@ static FloorName _current_floor = FN_ONE;
 static u16 _floor_limit[4] = {160, 128, 96, 64};
 static bool _intangible = false;
 static u8 _intangible_counter_down = 0;
+static u16 _climbing_effect_counter = 10;
 // ### END Variaveis globais ###
 
 // ### START Funções internas ###
@@ -477,6 +479,14 @@ static void turing_left_logic(const GameInputs *inputs)
  */
 static void climbing_up_logic(const GameInputs *inputs)
 {
+  _climbing_effect_counter++;
+
+  if (_climbing_effect_counter >= 10)
+  {
+    _climbing_effect_counter = 0;
+    XGM2_playPCMEx(EFFECT_STAIRS);
+  }
+
   if (is_first_entry())
   {
     SPR_setAnim(_sprite, GPA_CLIMBING);
@@ -490,6 +500,7 @@ static void climbing_up_logic(const GameInputs *inputs)
   }
 
   _current_floor = _current_floor + 1;
+  _climbing_effect_counter = 10;
 
   set_state(_last_state);
   return;
@@ -500,6 +511,14 @@ static void climbing_up_logic(const GameInputs *inputs)
  */
 static void climbing_down_logic(const GameInputs *inputs)
 {
+  _climbing_effect_counter++;
+
+  if (_climbing_effect_counter >= 10)
+  {
+    _climbing_effect_counter = 0;
+    XGM2_playPCMEx(EFFECT_STAIRS);
+  }
+
   if (is_first_entry())
   {
     SPR_setAnim(_sprite, GPA_CLIMBING);
@@ -513,6 +532,7 @@ static void climbing_down_logic(const GameInputs *inputs)
   }
 
   _current_floor = _current_floor - 1;
+  _climbing_effect_counter = 10;
 
   set_state(_last_state);
   return;
