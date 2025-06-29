@@ -78,6 +78,7 @@ void game_screen_start(const GameInputs *inputs)
     if (game_inputs_click(inputs->ok))
     {
       XGM2_playPCMEx(EFFECT_OPTION);
+      game_screen_set(GSN_DETAILS);
       return;
     }
     break;

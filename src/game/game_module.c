@@ -4,7 +4,7 @@
 #include "inputs/inputs.h"
 
 // ### START Globals ###
-u16 _tile_index = TILE_USER_INDEX; 
+u16 _tile_index = TILE_USER_INDEX;
 // ### END Globals ###
 
 static GameScreenName get_current_screen();
@@ -53,6 +53,10 @@ void game_logic()
 
   case GSN_CREDITS:
     game_screen_credits(&inputs);
+    break;
+
+  case GSN_DETAILS:
+    game_screen_details(&inputs);
     break;
 
   default:

@@ -11,6 +11,7 @@ extern const u8 sfx_menu_music[3328];
 extern const Image img_bg;
 extern const Image img_menu;
 extern const Image img_credits;
+extern const Image img_details;
 extern const SpriteDefinition spr_player;
 extern const SpriteDefinition spr_enemy_01;
 extern const SpriteDefinition spr_enemy_02;
