@@ -66,7 +66,7 @@ void game_screen_game(const GameInputs *inputs)
     XGM2_play(sfx_in_game_music);
     XGM2_setFMVolume(50);
   }
-  
+
   switch (_game_state)
   {
   case GAME_STATE_SETUP:
@@ -208,7 +208,7 @@ static void set_player_life(u16 new_value)
 
   char str[10];
   sprintf(str, "LIFE %d", _player_life);
-  VDP_drawText(str, 1, 4);
+  VDP_drawText(str, 31, 6);
 }
 
 /**
@@ -220,8 +220,9 @@ static void set_score(u16 current, u16 target)
   _target_score = target;
 
   char str[10];
-  sprintf(str, "KILLS %3d/%3d", _score, _target_score);
-  VDP_drawText(str, 1, 2);
+  VDP_drawText("KILLS ", 1, 6);
+  sprintf(str, "%3d/%3d", _score, _target_score);
+  VDP_drawText(str, 1, 7);
 }
 
 /**
@@ -233,5 +234,5 @@ static void set_level(u16 new_value)
 
   char str[10];
   sprintf(str, "LEVEL %d", _current_level);
-  VDP_drawText(str, 1, 6);
+  VDP_drawText(str, 31, 21);
 }
