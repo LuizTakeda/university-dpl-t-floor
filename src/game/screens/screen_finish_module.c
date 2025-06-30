@@ -4,6 +4,7 @@
 
 #include "../game.h"
 #include "game/globals.h"
+#include "../inputs/inputs.h"
 
 void game_screen_finish(const GameInputs *inputs)
 {
@@ -20,7 +21,7 @@ void game_screen_finish(const GameInputs *inputs)
     VDP_drawText("Press A", 16, 19);
   }
 
-  if (inputs->ok)
+  if (game_inputs_click(inputs->ok))
   {
     XGM2_playPCMEx(EFFECT_OPTION);
     game_screen_set(GSN_START);

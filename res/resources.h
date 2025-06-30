@@ -6,6 +6,7 @@ extern const u8 sfx_hit_effect[1536];
 extern const u8 sfx_stairs_effect[1792];
 extern const u8 sfx_shoot_effect[5120];
 extern const u8 sfx_teleport_effect[22784];
+extern const u8 sfx_life_effect[4096];
 extern const u8 sfx_in_game_music[3072];
 extern const u8 sfx_menu_music[3328];
 extern const Image img_bg;
@@ -23,5 +24,6 @@ extern const SpriteDefinition spr_enemy_04;
 extern const SpriteDefinition spr_enemy_05;
 extern const SpriteDefinition spr_enemy_06;
 extern const SpriteDefinition spr_projectile_01;
+extern const SpriteDefinition spr_item_01;
 
 #endif // _RES_RESOURCES_H_

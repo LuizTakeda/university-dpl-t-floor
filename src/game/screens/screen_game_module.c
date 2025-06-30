@@ -5,14 +5,16 @@
 #include "../game.h"
 #include "../player/player.h"
 #include "../enemies/enemies.h"
+#include "../items/items.h"
+#include "../inputs/inputs.h"
 
 //**************************************************
 //  Defines
 //**************************************************
 
 #define START_PLAYER_LIFE 3
-#define START_TARGET_SCORE 20
-#define PLUS_TARGET_SCORE 5
+#define START_TARGET_SCORE 15
+#define PLUS_TARGET_SCORE 3
 
 //**************************************************
 //  Enums
@@ -67,7 +69,8 @@ void game_screen_game(const GameInputs *inputs)
     XGM2_setFMVolume(50);
   }
 
-  if(!XGM2_isPlaying()){
+  if (!XGM2_isPlaying())
+  {
     XGM2_stop();
     XGM2_play(sfx_in_game_music);
     XGM2_setFMVolume(50);
@@ -128,6 +131,7 @@ static void state_setup(const GameInputs *inputs)
   // Setup
   player_setup();
   enemies_setup(_current_level);
+  items_setup();
 
   // Change game state to
   _game_state = GAME_STATE_IN_LEVEL;
@@ -138,11 +142,13 @@ static void state_setup(const GameInputs *inputs)
  */
 static void state_in_level(const GameInputs *inputs)
 {
-  //XGM2_resume();
+  // XGM2_resume();
 
   GamePlayerInfo player_info = player_logic(inputs);
 
   EnemiesEvents enemies_events = enemies_logic(&player_info);
+
+  ItemsEvent items_event = items_logic(&player_info);
 
   // Checks if any enemy has been killed
   if (enemies_events.enemies_dead > 0)
@@ -155,6 +161,11 @@ static void state_in_level(const GameInputs *inputs)
   {
     _game_state = GAME_STATE_CHANING_LEVEL;
     return;
+  }
+
+  if (items_event == ITEM_EVENT_LIFE)
+  {
+    set_player_life(_player_life + 1);
   }
 
   // Checks if the player was hit
@@ -176,12 +187,23 @@ static void state_in_level(const GameInputs *inputs)
 
 static void state_changing_level(const GameInputs *inputs)
 {
-  //XGM2_pause();
+  // XGM2_pause();
+
+  if (_current_level + 1 > 9)
+  {
+    player_clean();
+    enemies_clean();
+    items_clean();
+    game_screen_set(GSN_FINISH);
+    return;
+  }
+
   set_level(_current_level + 1);
   set_score(0, _target_score + PLUS_TARGET_SCORE);
   set_player_life(_player_life + 1);
 
   enemies_clean();
+  items_clean();
   enemies_next_level(_current_level);
 
   _game_state = GAME_STATE_IN_LEVEL;
@@ -192,9 +214,10 @@ static void state_changing_level(const GameInputs *inputs)
  */
 static void state_dead(const GameInputs *inputs)
 {
-  //XGM2_pause();
+  // XGM2_pause();
   player_clean();
   enemies_clean();
+  items_clean();
   game_screen_set(GSN_GAME_OVER);
 }
 
