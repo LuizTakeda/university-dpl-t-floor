@@ -5,14 +5,16 @@
 #include "../game.h"
 #include "../player/player.h"
 #include "../enemies/enemies.h"
+#include "../items/items.h"
+#include "../inputs/inputs.h"
 
 //**************************************************
 //  Defines
 //**************************************************
 
 #define START_PLAYER_LIFE 3
-#define START_TARGET_SCORE 30
-#define PLUS_TARGET_SCORE 10
+#define START_TARGET_SCORE 15
+#define PLUS_TARGET_SCORE 3
 
 //**************************************************
 //  Enums
@@ -45,7 +47,7 @@ static void set_level(u16 new_value);
 //**************************************************
 
 GameState _game_state = GAME_STATE_SETUP;
-GameLevel _current_level = GAME_LEVEL_ONE;
+GameLevel _current_level = GAME_LEVEL_1;
 
 uint16_t _score, _target_score;
 uint16_t _player_life;
@@ -64,7 +66,14 @@ void game_screen_game(const GameInputs *inputs)
     _game_state = GAME_STATE_SETUP;
 
     XGM2_play(sfx_in_game_music);
-    XGM2_setFMVolume(40);
+    XGM2_setFMVolume(50);
+  }
+
+  if (!XGM2_isPlaying())
+  {
+    XGM2_stop();
+    XGM2_play(sfx_in_game_music);
+    XGM2_setFMVolume(50);
   }
 
   switch (_game_state)
@@ -117,11 +126,12 @@ static void state_setup(const GameInputs *inputs)
   // Initial values
   set_player_life(START_PLAYER_LIFE);
   set_score(0, START_TARGET_SCORE);
-  set_level(GAME_LEVEL_SIX);
+  set_level(GAME_LEVEL_1);
 
   // Setup
   player_setup();
   enemies_setup(_current_level);
+  items_setup();
 
   // Change game state to
   _game_state = GAME_STATE_IN_LEVEL;
@@ -132,11 +142,13 @@ static void state_setup(const GameInputs *inputs)
  */
 static void state_in_level(const GameInputs *inputs)
 {
-  XGM2_resume();
+  // XGM2_resume();
 
   GamePlayerInfo player_info = player_logic(inputs);
 
   EnemiesEvents enemies_events = enemies_logic(&player_info);
+
+  ItemsEvent items_event = items_logic(&player_info);
 
   // Checks if any enemy has been killed
   if (enemies_events.enemies_dead > 0)
@@ -149,6 +161,11 @@ static void state_in_level(const GameInputs *inputs)
   {
     _game_state = GAME_STATE_CHANING_LEVEL;
     return;
+  }
+
+  if (items_event == ITEM_EVENT_LIFE)
+  {
+    set_player_life(_player_life + 1);
   }
 
   // Checks if the player was hit
@@ -170,12 +187,23 @@ static void state_in_level(const GameInputs *inputs)
 
 static void state_changing_level(const GameInputs *inputs)
 {
-  XGM2_pause();
+  // XGM2_pause();
+
+  if (_current_level + 1 > 9)
+  {
+    player_clean();
+    enemies_clean();
+    items_clean();
+    game_screen_set(GSN_FINISH);
+    return;
+  }
+
   set_level(_current_level + 1);
   set_score(0, _target_score + PLUS_TARGET_SCORE);
   set_player_life(_player_life + 1);
 
   enemies_clean();
+  items_clean();
   enemies_next_level(_current_level);
 
   _game_state = GAME_STATE_IN_LEVEL;
@@ -186,8 +214,10 @@ static void state_changing_level(const GameInputs *inputs)
  */
 static void state_dead(const GameInputs *inputs)
 {
-  XGM2_pause();
+  // XGM2_pause();
   player_clean();
+  enemies_clean();
+  items_clean();
   game_screen_set(GSN_GAME_OVER);
 }
 
@@ -207,7 +237,7 @@ static void set_player_life(u16 new_value)
 
   char str[10];
   sprintf(str, "LIFE %d", _player_life);
-  VDP_drawText(str, 1, 4);
+  VDP_drawText(str, 31, 6);
 }
 
 /**
@@ -219,8 +249,9 @@ static void set_score(u16 current, u16 target)
   _target_score = target;
 
   char str[10];
-  sprintf(str, "KILLS %3d/%3d", _score, _target_score);
-  VDP_drawText(str, 1, 2);
+  VDP_drawText("KILLS ", 1, 6);
+  sprintf(str, "%3d/%3d", _score, _target_score);
+  VDP_drawText(str, 1, 7);
 }
 
 /**
@@ -232,5 +263,5 @@ static void set_level(u16 new_value)
 
   char str[10];
   sprintf(str, "LEVEL %d", _current_level);
-  VDP_drawText(str, 1, 6);
+  VDP_drawText(str, 31, 21);
 }

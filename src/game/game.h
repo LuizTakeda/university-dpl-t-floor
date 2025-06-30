@@ -32,6 +32,7 @@ typedef enum
   GSN_GAME_OVER,
   GSN_FINISH,
   GSN_CREDITS,
+  GSN_DETAILS
 } GameScreenName;
 
 typedef enum
@@ -54,16 +55,18 @@ typedef struct
   bool intangible;
 } GamePlayerInfo;
 
-typedef enum{
-  GAME_LEVEL_ONE = 1,
-  GAME_LEVEL_TWO,
-  GAME_LEVEL_THREE,
-  GAME_LEVEL_FOUR,
-  GAME_LEVEL_FIVE,
-  GAME_LEVEL_SIX,
-  GAME_LEVEL_SEVEN,
-  GAME_LEVEL_EIGHT,
-}GameLevel;
+typedef enum
+{
+  GAME_LEVEL_1 = 1,
+  GAME_LEVEL_2,
+  GAME_LEVEL_3,
+  GAME_LEVEL_4,
+  GAME_LEVEL_5,
+  GAME_LEVEL_6,
+  GAME_LEVEL_7,
+  GAME_LEVEL_8,
+  GAME_LEVEL_9,
+} GameLevel;
 
 // ### START Globals ###
 extern u16 _tile_index;
@@ -125,6 +128,11 @@ void game_screen_finish(const GameInputs *inputs);
  * Tela de creditos
  */
 void game_screen_credits(const GameInputs *inputs);
+
+/**
+ *
+ */
+void game_screen_details(const GameInputs *inputs);
 
 // ### END Functions ###
 

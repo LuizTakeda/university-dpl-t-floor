@@ -14,11 +14,15 @@ void game_screen_game_over(const GameInputs *inputs)
     VDP_resetScreen();
     VDP_resetSprites();
 
-    VDP_drawText("GAME OVER", 1, 1);
+    VDP_drawImageEx(BG_A, &img_base, TILE_ATTR_FULL(PAL0, 0, 0, 0, 1), 0, 0, true, DMA);
 
+    VDP_drawText("Game Over", 15, 12);
+
+    VDP_drawText("Press A to exit", 11, 20);
   }
-  
-  if(inputs->ok){
+
+  if (inputs->ok)
+  {
     game_screen_set(GSN_START);
   }
 }

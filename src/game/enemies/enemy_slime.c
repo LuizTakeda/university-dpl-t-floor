@@ -239,6 +239,7 @@ EnemiesEvents enemy_slime_logic(const GamePlayerInfo *player_info)
         _floor_quantity[_slime_list[i]._sprite->data]--;
         _slime_list[i].dead = true;
         return_value.enemies_dead++;
+        continue;
         break;
       }
 
@@ -296,9 +297,17 @@ static bool slime_create(u8 floor)
 
     _slime_list[i]._sprite->data = floor;
 
+    _slime_list[i].hit_box_left_x = fix16ToInt(_slime_list[i].x) + SLIME_HIT_BOX_OFFSET_LEFT_X;
+    _slime_list[i].hit_box_right_x = fix16ToInt(_slime_list[i].x) + _slime_list[i]._sprite->definition->w - 1 - SLIME_HIT_BOX_OFFSET_RIGHT_X;
+
+    _slime_list[i].hit_box_top_y = fix16ToInt(_slime_list[i].y) + SLIME_HIT_BOX_OFFSET_TOP_Y;
+    _slime_list[i].hit_box_bottom_y = fix16ToInt(_slime_list[i].y) + _slime_list[i]._sprite->definition->h - 1 - SLIME_HIT_BOX_OFFSET_BOTTOM_Y;
+
     SPR_setAutoTileUpload(_slime_list[i]._sprite, FALSE);
     SPR_setFrameChangeCallback(_slime_list[i]._sprite, &slime_frame_change);
-  SPR_setAlwaysOnTop(_slime_list[i]._sprite);
+    SPR_setAlwaysOnTop(_slime_list[i]._sprite);
+
+    SPR_setAnim(_slime_list[i]._sprite, 0);
 
     _floor_quantity[floor]++;
     return true;
