@@ -6,7 +6,29 @@
 #include "enemies.h"
 #include "enemies_internals.h"
 
+//**************************************************
+// Statis Function Prototype
+//**************************************************
+
+static EnemiesEvents level_1(const GamePlayerInfo *player_info);
+static EnemiesEvents level_2(const GamePlayerInfo *player_info);
+static EnemiesEvents level_3(const GamePlayerInfo *player_info);
+static EnemiesEvents level_4(const GamePlayerInfo *player_info);
+static EnemiesEvents level_5(const GamePlayerInfo *player_info);
+static EnemiesEvents level_6(const GamePlayerInfo *player_info);
+static EnemiesEvents level_7(const GamePlayerInfo *player_info);
+static EnemiesEvents level_8(const GamePlayerInfo *player_info);
+static EnemiesEvents level_9(const GamePlayerInfo *player_info);
+
+//**************************************************
+// Globals
+//**************************************************
+
 GameLevel _game_level;
+
+//**************************************************
+// Functions
+//**************************************************
 
 /**
  *
@@ -68,70 +90,33 @@ EnemiesEvents enemies_logic(const GamePlayerInfo *player_info)
 
   switch (_game_level)
   {
-  case GAME_LEVEL_SIX:
-  {
-    enemy_jumper_spawn(_game_level);
 
-    EnemiesEvents jumper_event = enemy_jumper_logic(player_info);
+  case GAME_LEVEL_1:
+    return level_1(player_info);
 
-    enemies_event.enemies_dead += jumper_event.enemies_dead;
-    enemies_event.player_hit |= jumper_event.player_hit;
-  }
+  case GAME_LEVEL_2:
+    return level_2(player_info);
 
-  case GAME_LEVEL_FIVE:
-  {
-    enemy_vertical_shooter_spawn(_game_level);
+  case GAME_LEVEL_3:
+    return level_3(player_info);
 
-    EnemiesEvents horizontal_shooter_event = enemy_vertical_shooter_logic(player_info);
+  case GAME_LEVEL_4:
+    return level_4(player_info);
 
-    enemies_event.enemies_dead += horizontal_shooter_event.enemies_dead;
-    enemies_event.player_hit |= horizontal_shooter_event.player_hit;
-  }
+  case GAME_LEVEL_5:
+    return level_5(player_info);
 
-  case GAME_LEVEL_FOUR:
-  {
-    enemy_horizontal_shooter_spawn(_game_level);
+  case GAME_LEVEL_6:
+    return level_6(player_info);
 
-    EnemiesEvents vertical_shooter_event = enemy_horizontal_shooter_logic(player_info);
+  case GAME_LEVEL_7:
+    return level_7(player_info);
 
-    enemies_event.enemies_dead += vertical_shooter_event.enemies_dead;
-    enemies_event.player_hit |= vertical_shooter_event.player_hit;
+  case GAME_LEVEL_8:
+    return level_8(player_info);
 
-    EnemiesEvents ball_projectile_event = enemy_ball_projectile_logic(player_info);
-
-    enemies_event.player_hit |= ball_projectile_event.player_hit;
-  }
-
-  case GAME_LEVEL_THREE:
-  {
-    // enemy_bat_spawn(_game_level);
-
-    EnemiesEvents bat_event = enemy_bat_logic(player_info);
-
-    enemies_event.enemies_dead += bat_event.enemies_dead;
-    enemies_event.player_hit |= bat_event.player_hit;
-  }
-
-  case GAME_LEVEL_TWO:
-  {
-    enemy_teleporter_spawn(_game_level, player_info);
-
-    EnemiesEvents teleporter_event = enemy_teleporter_logic(player_info);
-
-    enemies_event.enemies_dead += teleporter_event.enemies_dead;
-    enemies_event.player_hit |= teleporter_event.player_hit;
-  }
-
-  case GAME_LEVEL_ONE:
-  {
-    // enemy_slime_spawn(_game_level);
-
-    EnemiesEvents slime_event = enemy_slime_logic(player_info);
-
-    enemies_event.enemies_dead += slime_event.enemies_dead;
-    enemies_event.player_hit |= slime_event.player_hit;
-  }
-  break;
+  case GAME_LEVEL_9:
+    return level_9(player_info);
 
   default:
     break;
@@ -213,4 +198,241 @@ bool did_enemy_hit_player(const Enemy *enemy, const GamePlayerInfo *player_info)
   }
 
   return false;
+}
+
+//**************************************************
+// Static functions
+//**************************************************
+
+static EnemiesEvents level_1(const GamePlayerInfo *player_info)
+{
+  EnemiesEvents enemies_event;
+  enemies_event.enemies_dead = 0;
+  enemies_event.player_hit = false;
+
+  enemy_slime_spawn(_game_level);
+  EnemiesEvents slime_event = enemy_slime_logic(player_info);
+  enemies_event.enemies_dead += slime_event.enemies_dead;
+  enemies_event.player_hit |= slime_event.player_hit;
+
+  return enemies_event;
+}
+
+static EnemiesEvents level_2(const GamePlayerInfo *player_info)
+{
+  EnemiesEvents enemies_event;
+  enemies_event.enemies_dead = 0;
+  enemies_event.player_hit = false;
+
+  enemy_slime_spawn(_game_level);
+  EnemiesEvents slime_event = enemy_slime_logic(player_info);
+  enemies_event.enemies_dead += slime_event.enemies_dead;
+  enemies_event.player_hit |= slime_event.player_hit;
+
+  enemy_teleporter_spawn(_game_level, player_info);
+  EnemiesEvents teleporter_event = enemy_teleporter_logic(player_info);
+  enemies_event.enemies_dead += teleporter_event.enemies_dead;
+  enemies_event.player_hit |= teleporter_event.player_hit;
+
+  return enemies_event;
+}
+
+static EnemiesEvents level_3(const GamePlayerInfo *player_info)
+{
+  EnemiesEvents enemies_event;
+  enemies_event.enemies_dead = 0;
+  enemies_event.player_hit = false;
+
+  enemy_slime_spawn(_game_level);
+  EnemiesEvents slime_event = enemy_slime_logic(player_info);
+  enemies_event.enemies_dead += slime_event.enemies_dead;
+  enemies_event.player_hit |= slime_event.player_hit;
+
+  enemy_teleporter_spawn(_game_level, player_info);
+  EnemiesEvents teleporter_event = enemy_teleporter_logic(player_info);
+  enemies_event.enemies_dead += teleporter_event.enemies_dead;
+  enemies_event.player_hit |= teleporter_event.player_hit;
+
+  enemy_bat_spawn(_game_level);
+  EnemiesEvents bat_event = enemy_bat_logic(player_info);
+  enemies_event.enemies_dead += bat_event.enemies_dead;
+  enemies_event.player_hit |= bat_event.player_hit;
+
+  return enemies_event;
+}
+
+static EnemiesEvents level_4(const GamePlayerInfo *player_info)
+{
+  EnemiesEvents enemies_event;
+  enemies_event.enemies_dead = 0;
+  enemies_event.player_hit = false;
+
+  enemy_slime_spawn(_game_level);
+  EnemiesEvents slime_event = enemy_slime_logic(player_info);
+  enemies_event.enemies_dead += slime_event.enemies_dead;
+  enemies_event.player_hit |= slime_event.player_hit;
+
+  enemy_bat_spawn(_game_level);
+  EnemiesEvents bat_event = enemy_bat_logic(player_info);
+  enemies_event.enemies_dead += bat_event.enemies_dead;
+  enemies_event.player_hit |= bat_event.player_hit;
+
+  enemy_jumper_spawn(_game_level);
+  EnemiesEvents jumper_event = enemy_jumper_logic(player_info);
+  enemies_event.enemies_dead += jumper_event.enemies_dead;
+  enemies_event.player_hit |= jumper_event.player_hit;
+
+  return enemies_event;
+}
+
+static EnemiesEvents level_5(const GamePlayerInfo *player_info)
+{
+  EnemiesEvents enemies_event;
+  enemies_event.enemies_dead = 0;
+  enemies_event.player_hit = false;
+
+  enemy_slime_spawn(_game_level);
+  EnemiesEvents slime_event = enemy_slime_logic(player_info);
+  enemies_event.enemies_dead += slime_event.enemies_dead;
+  enemies_event.player_hit |= slime_event.player_hit;
+
+  enemy_teleporter_spawn(_game_level, player_info);
+  EnemiesEvents teleporter_event = enemy_teleporter_logic(player_info);
+  enemies_event.enemies_dead += teleporter_event.enemies_dead;
+  enemies_event.player_hit |= teleporter_event.player_hit;
+
+  enemy_bat_spawn(_game_level);
+  EnemiesEvents bat_event = enemy_bat_logic(player_info);
+  enemies_event.enemies_dead += bat_event.enemies_dead;
+  enemies_event.player_hit |= bat_event.player_hit;
+
+  enemy_jumper_spawn(_game_level);
+  EnemiesEvents jumper_event = enemy_jumper_logic(player_info);
+  enemies_event.enemies_dead += jumper_event.enemies_dead;
+  enemies_event.player_hit |= jumper_event.player_hit;
+
+  return enemies_event;
+}
+
+static EnemiesEvents level_6(const GamePlayerInfo *player_info)
+{
+  EnemiesEvents enemies_event;
+  enemies_event.enemies_dead = 0;
+  enemies_event.player_hit = false;
+
+  enemy_slime_spawn(_game_level);
+  EnemiesEvents slime_event = enemy_slime_logic(player_info);
+  enemies_event.enemies_dead += slime_event.enemies_dead;
+  enemies_event.player_hit |= slime_event.player_hit;
+
+  enemy_jumper_spawn(_game_level);
+  EnemiesEvents jumper_event = enemy_jumper_logic(player_info);
+  enemies_event.enemies_dead += jumper_event.enemies_dead;
+  enemies_event.player_hit |= jumper_event.player_hit;
+
+  enemy_horizontal_shooter_spawn(_game_level);
+  EnemiesEvents vertical_shooter_event = enemy_horizontal_shooter_logic(player_info);
+  enemies_event.enemies_dead += vertical_shooter_event.enemies_dead;
+  enemies_event.player_hit |= vertical_shooter_event.player_hit;
+
+  EnemiesEvents ball_projectile_event = enemy_ball_projectile_logic(player_info);
+  enemies_event.player_hit |= ball_projectile_event.player_hit;
+
+  return enemies_event;
+}
+
+static EnemiesEvents level_7(const GamePlayerInfo *player_info)
+{
+  EnemiesEvents enemies_event;
+  enemies_event.enemies_dead = 0;
+  enemies_event.player_hit = false;
+
+  enemy_slime_spawn(_game_level);
+  EnemiesEvents slime_event = enemy_slime_logic(player_info);
+  enemies_event.enemies_dead += slime_event.enemies_dead;
+  enemies_event.player_hit |= slime_event.player_hit;
+
+  enemy_bat_spawn(_game_level);
+  EnemiesEvents bat_event = enemy_bat_logic(player_info);
+  enemies_event.enemies_dead += bat_event.enemies_dead;
+  enemies_event.player_hit |= bat_event.player_hit;
+
+  enemy_horizontal_shooter_spawn(_game_level);
+  EnemiesEvents vertical_shooter_event = enemy_horizontal_shooter_logic(player_info);
+  enemies_event.enemies_dead += vertical_shooter_event.enemies_dead;
+  enemies_event.player_hit |= vertical_shooter_event.player_hit;
+
+  enemy_vertical_shooter_spawn(_game_level);
+  EnemiesEvents horizontal_shooter_event = enemy_vertical_shooter_logic(player_info);
+  enemies_event.enemies_dead += horizontal_shooter_event.enemies_dead;
+  enemies_event.player_hit |= horizontal_shooter_event.player_hit;
+
+  EnemiesEvents ball_projectile_event = enemy_ball_projectile_logic(player_info);
+  enemies_event.player_hit |= ball_projectile_event.player_hit;
+
+  return enemies_event;
+}
+
+static EnemiesEvents level_8(const GamePlayerInfo *player_info)
+{
+  EnemiesEvents enemies_event;
+  enemies_event.enemies_dead = 0;
+  enemies_event.player_hit = false;
+
+  enemy_teleporter_spawn(_game_level, player_info);
+  EnemiesEvents teleporter_event = enemy_teleporter_logic(player_info);
+  enemies_event.enemies_dead += teleporter_event.enemies_dead;
+  enemies_event.player_hit |= teleporter_event.player_hit;
+
+  enemy_jumper_spawn(_game_level);
+  EnemiesEvents jumper_event = enemy_jumper_logic(player_info);
+  enemies_event.enemies_dead += jumper_event.enemies_dead;
+  enemies_event.player_hit |= jumper_event.player_hit;
+
+  enemy_vertical_shooter_spawn(_game_level);
+  EnemiesEvents horizontal_shooter_event = enemy_vertical_shooter_logic(player_info);
+  enemies_event.enemies_dead += horizontal_shooter_event.enemies_dead;
+  enemies_event.player_hit |= horizontal_shooter_event.player_hit;
+
+  EnemiesEvents ball_projectile_event = enemy_ball_projectile_logic(player_info);
+  enemies_event.player_hit |= ball_projectile_event.player_hit;
+
+  return enemies_event;
+}
+
+static EnemiesEvents level_9(const GamePlayerInfo *player_info)
+{
+  EnemiesEvents enemies_event;
+  enemies_event.enemies_dead = 0;
+  enemies_event.player_hit = false;
+
+  enemy_slime_spawn(_game_level);
+  EnemiesEvents slime_event = enemy_slime_logic(player_info);
+  enemies_event.enemies_dead += slime_event.enemies_dead;
+  enemies_event.player_hit |= slime_event.player_hit;
+
+  enemy_teleporter_spawn(_game_level, player_info);
+  EnemiesEvents teleporter_event = enemy_teleporter_logic(player_info);
+  enemies_event.enemies_dead += teleporter_event.enemies_dead;
+  enemies_event.player_hit |= teleporter_event.player_hit;
+
+  enemy_bat_spawn(_game_level);
+  EnemiesEvents bat_event = enemy_bat_logic(player_info);
+  enemies_event.enemies_dead += bat_event.enemies_dead;
+  enemies_event.player_hit |= bat_event.player_hit;
+
+  enemy_jumper_spawn(_game_level);
+  EnemiesEvents jumper_event = enemy_jumper_logic(player_info);
+  enemies_event.enemies_dead += jumper_event.enemies_dead;
+  enemies_event.player_hit |= jumper_event.player_hit;
+
+  enemy_vertical_shooter_spawn(_game_level);
+  EnemiesEvents horizontal_shooter_event = enemy_vertical_shooter_logic(player_info);
+  enemies_event.enemies_dead += horizontal_shooter_event.enemies_dead;
+  enemies_event.player_hit |= horizontal_shooter_event.player_hit;
+
+  EnemiesEvents ball_projectile_event = enemy_ball_projectile_logic(player_info);
+  enemies_event.player_hit |= ball_projectile_event.player_hit;
+
+  return enemies_event;
 }

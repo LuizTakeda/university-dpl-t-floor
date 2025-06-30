@@ -25,6 +25,9 @@ void game_screen_start(const GameInputs *inputs)
 
     VDP_drawImageEx(BG_A, &img_menu, TILE_ATTR_FULL(PAL0, 0, 0, 0, 1), 0, 0, true, DMA);
 
+    XGM2_play(sfx_menu_music);
+    XGM2_setFMVolume(40);
+
     _current_option = OPTION_START_GAME;
   }
 
